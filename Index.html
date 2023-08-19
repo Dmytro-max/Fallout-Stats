@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, userscalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-tofit=no">
+    <title>FalloutStats</title>
+    <link rel="stylesheet" href="Style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav>
+        <!-- <div>
+            <img id="img1" src="Book.png">
+            <div class="about">
+                <h2>Про автора:</h2>
+                <p></p>
+            </div>
+        </div> -->
+        <div class="links">
+            <ul>
+                <li><a href="" class="F3">Fallout 3</a></li>
+                <li><a class="FNV">Fallout New Vegas</a></li>
+                <li><a href="" class="Len">Fallout</a></li>
+            </ul>
+        </div>
+        <div>
+            <select name="language" id="langSelect">
+                <!-- <label for="enOption">
+                    <img src="Icons/en.png">
+                </label> -->
+                <option data-img-src="Icons/en.png" value="en" id="enOption">EN
+                </option>
+                <option data-img-src="Icons/en.png" value="ua" id="enOption">UA
+                </option>
+                <option data-img-src="Icons/en.png" value="ru" id="enOption">RU
+                </option>
+            </select>
+        </div>
+    </nav>
+
+    </ul>
+
+    <div class="params">
+        <div id="SPECIAL">
+            <h3>SPECIAL</h3>
+            <!-- <a id="stored"></a> -->
+        </div>
+        <div id="Derived">
+        </div>
+        <div id="Skills">
+            <div id="head">
+                <h2 id="bonus">Skills</h2>
+                <a id="max">Skill points on the 50:</a><a id="need">Needed:</a>
+            </div>
+            <div class="Stats">
+            </div>
+        </div>
+        <div id="Traits">
+            <h2>Особенности</h2>
+            <div class="Stats">
+            </div>
+        </div>
+        <div id="Description">
+            <h2 id="Elem">Уловка Логана</h2>
+            <p id="Text">Вас никогда не отправят в дом престарелых, вы будете вечно молоды (не выше 30 уровня)! Вам не
+                грозит зависимость от химикатов, и все препараты будут действовать вдвое дольше... но после 30 —
+                прощайте опыт, способности и очки навыков!</p>
+        </div>
+    </div>
+
+    <div id="Abilities">
+        <div class="area">
+            <div class="area_head">
+                <h2>Основные способности</h2>
+                <!-- <h2 id="level">Уровень</h2> -->
+                <div id="level_Choice">
+                    <!-- <h2 id="stored">Доступно: 5</h2> -->
+                    <h2>Уровень</h2>
+                    <button id="CharLeveldown" class="previous">&larr;</button>
+                    <select id="CharlevelChoose"></select>
+                    <button id="CharLevelup" class="next">&rarr;</button>
+                </div>
+            </div>
+            <div class="List">
+                <div class="Choose_list">
+                    <div class="head">
+                        <h1>Доступные</h1>
+                        <h2>Название</h2>
+                        <h2>Ур.</h2>
+                        <h2>Др. треб.</h2>
+                        <h2>Ранги</h2>
+                    </div>
+                    <!-- <div id="" class="ability main unAvailible targeted">
+                        <h4>Чёрная вдова</h4>
+                        <h4>2</h4>
+                        <a>Персонаж мужского/женского пола</a>
+                        <h4>1</h4>
+                        <div class="additional">
+                            <p class="description">+10 % к наносимому урону по противнику противоположного пола,
+                                дополнительные реплики в разговоре с представителем противоположного пола</p>
+                            <div class="window">
+                                <h3>SPECIAL</h3>
+                                <div class="Stats Special">
+                                    <div><img src="Icons/Strength_icon.webp"><a name="Strength"
+                                            class="value">5</a><a>Сила</a><button name="Strength"
+                                            class="up">+</button><button class="down" name="Strength">-</button></div>
+                                    <div><img src="Icons/Perception_icon.webp"><a name="Perception"
+                                            class="value">5</a><a>Восприятие</a><button name="Perception"
+                                            class="up">+</button><button class="down" name="Perception">-</button>
+                                    </div>
+                                    <div><img src="Icons/Endurance_icon.webp"><a name="Endurance"
+                                            class="value">5</a><a>Выносливость</a><button name="Endurance"
+                                            class="up">+</button><button class="down" name="Endurance">-</button>
+                                    </div>
+                                    <div><img src="Icons/Charisma_icon.webp"><a name="Charisma"
+                                            class="value">5</a><a>Харизма</a><button name="Charisma"
+                                            class="up">+</button><button class="down" name="Charisma">-</button>
+                                    </div>
+                                    <div><img src="Icons/Intelligence_icon.webp"><a id="iv" name="Intelligence"
+                                            class="value">5</a><a>Интеллект</a><button name="Intelligence"
+                                            class="up">+</button><button class="down" name="Intelligence">-</button>
+                                    </div>
+                                    <div><img src="Icons/Agility_icon.webp"><a name="Agility"
+                                            class="value">5</a><a>Ловкость</a><button name="Agility"
+                                            class="up">+</button><button id="Agility" class="down">-</button>
+                                    </div>
+                                    <div><img src="Icons/Luck_icon.webp"><a name="Luck"
+                                            class="value">5</a><a>Удача</a><button name="Luck"
+                                            class="up">+</button><button class="down" name="Luck">-</button>
+                                    </div>
+                                </div>
+                                    <div class="control">
+                                        <button id="reset" disabled="">Сброс</button>
+                                        <button id="accept" disabled="">Готово</button>
+                                    </div>
+                            </div>
+                            <h2>Ранги:</h2> -->
+                        </div>
+                <div class="added">
+                    <div class="head">
+                        <h1>Добавленые</h1>
+                        <h2>Название</h2>
+                        <h2>Ур.</h2>
+                        <h2>Треб.</h2>
+                        <h2>Ранг.</h2>
+                    </div>
+                    <!-- <div id="" class="ability main targeted">
+                        <h4>Чёрная вдова</h4>
+                        <h4>2</h4>
+                        <a>Персонаж мужского/женского пола</a>
+                        <h4>1</h4>
+                        <div class="additional">
+                            <p class="description">+10 % к наносимому урону по противнику противоположного пола, дополнительные реплики в разговоре с представителем противоположного пола</p>
+                            <h3>Ранги:</h3>
+                            <p class="rang">1</p>
+                            <p class="rang">2</p>
+                            <p class="rang">3</p>
+                            <p class="rang">4</p>
+                            <p class="rang">5</p>
+                            <p class="rang">6</p>
+                            <p class="rang">7</p>
+                        </div>
+                    </div> -->
+                </div>
+                    </div>
+                </div>
+        <div class="area" id="Special_Abilities">
+            <div class="area_head">
+                <h2>Специальние способности</h2>
+                <!-- <h2 id="level"></h2> -->
+            </div>
+            <div class="List">
+                <div class="Choose_list">
+                    <div class="head">
+                        <h1>Доступные</h1>
+                        <h2>Название</h2>
+                        <h2>Спос. Получения</h2>
+                        <h2>Ранги</h2>
+                    </div>
+                    <!-- <div id="" class="ability main unAvailible">
+                        <h4>Чёрная вдова</h4>
+                        <a>Персонаж мужского/женского пола</a>
+                        <h4>1</h4>
+                    </div> -->
+                </div>
+                <div class="added">
+                    <div class="head">
+                        <h1>Добавленые</h1>
+                        <h2>Название</h2>
+                        <h2>Спос. Получения</h2>
+                        <h2>Ранг.</h2>
+                    </div>
+                    <!-- <div id="" class="main unChecked"><a>HK</a></div> -->
+                </div>
+            </div>
+        </div>
+        <div class="area" id="Implants_Abilities">
+            <div class="area_head">
+                <h2>Cпособности Импланты</h2>
+                <!-- <div id="level_Choice">
+                        <h2 id="stored">Доступно: 5</h2>
+                        <h2>Уровень</h2>
+                        <button id="implantLevel" class="down">&larr;</button>
+                        <select id="ImplantlevelChoose"></select>
+                        <button id="implantLevel" class="up">&rarr;</button>
+                    </div> -->
+            </div>
+            <div class="List">
+                <div class="Choose_list">
+                    <div class="head">
+                        <h1>Доступные</h1>
+                        <h2>Название</h2>
+                        <h2>Спос. Получения</h2>
+                        <h2>Ранги</h2>
+                        <!-- <h2>Ранги</h2> -->
+                    </div>
+                    <div id="" class="ability main unAvailible">
+                        <h4>Чёрная вдова</h4>
+                        <a>Персонаж мужского/женского пола</a>
+                        <h4>1</h4>
+                        <!-- <div id="Strength" class="unChecked implant"><i></i></div> -->
+                    </div>
+                </div>
+                <div class="added">
+                    <div class="head">
+                        <h1>Добавленые</h1>
+                        <h2>Название</h2>
+                        <h2>Спос. Получения</h2>
+                        <h2>Ранг.</h2>
+                    </div>
+                    <!-- <div id="" class="main unChecked"><a>HK</a></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Classes.js"></script>
+    <script src="Special.js"></script>
+    <script src="Skills.js"></script>
+    <script src="Abilities.js"></script>
+    <script src="Traits.js"></script>
+    <script src="Derived.js"></script>
+    <script src="Scripts.js"></script>
+    <script src="Triggers.js"></script>
+</body>
