@@ -280,6 +280,8 @@ function LevelUp(char) {
         char.level_reached += 1;
         char.level += 1;
 
+        char.skillsByLevel[char.level - 1]['skillbook_bonus'] = char.skillbook_bonus;
+        
         char.skillsByLevel[char.level - 1]['points'] = Math.floor(char.SkillPointsCount() + Math.floor(char.rest_point));
         char.rest_point += char.SkillPointsCount() - Math.floor(char.SkillPointsCount());
         if (char.rest_point == 1) {//!!

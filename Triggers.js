@@ -45,7 +45,6 @@ let Added = document.querySelector('#Special_Abilities .added');
 
 let ImplantsAvailible = document.querySelector('#Implants_Abilities .Choose_list');
 let ImplantsAdded = document.querySelector('#Implants_Abilities .added');
-// console.log(Added)
 
 function BuildAbilities(char) {
     for (let key in char.Main_Abilities) {
@@ -279,7 +278,7 @@ function SkillsBuild(char) {
             ul.classList = 'books_side unactive';
             ul.id = key + 'List';
 
-            if (key in char.skillBooks) {
+            if ('Books' in char.skills[key]) {
                 let li = document.createElement('li');
                 let bookdiv = document.createElement('div');
                 bookdiv.className = 'unChecked';
@@ -307,15 +306,16 @@ function SkillsBuild(char) {
                 li.appendChild(location);
                 li.appendChild(details);
 
-                for (let book of char.skillBooks[key].Books) fillBooks(li, book, select.name);
-
+                for (let i=0; i<char.skills[key].Books.length; i++) {
+                    fillBooks(li, char.skills[key].Books[i],i, key);
+                }
                 ul.appendChild(li);
 
-                function fillBooks(li, book, skill) {
+                function fillBooks(li, book, number, skill) {
                     let idiv = document.createElement('div');
                     idiv.className = 'unChecked';
                     idiv.dataset.skill = skill;
-                    idiv.dataset.number = book[0];
+                    idiv.dataset.number = number;
 
                     idiv.addEventListener('click', CheckboxActivate)
 
@@ -325,14 +325,16 @@ function SkillsBuild(char) {
                         skill = div.dataset.skill;
                         if (div.classList.contains('unChecked')) {
                             char.skillsByLevel[char.level - 1][skill] += char.skillbook_bonus;
-                            char.skillBooks[skill].get(number).level = char.level;
+                            char.skills[skill].Books[number].level = char.level;
+
                             char.skills[skill].bonus += char.skillbook_bonus;
                             char.skillBookBlocks.get(skill)['BookLevels'].get(number).textContent = char.level;
                             div.classList.replace("unChecked", "Checked");
                         }
                         else {
-                            let level = char.skillBooks[skill].get(number).level;
-                            char.skillBooks[skill].get(number).level = null;
+                            let level = char.skills[skill].Books[number].level;
+                            char.skills[skill].Books[number].level = null;
+
                             char.skillsByLevel[level - 1][skill] -= char.skillbook_bonus;
                             char.skills[skill].bonus -= char.skillbook_bonus;
                             char.skillBookBlocks.get(skill)['BookLevels'].get(number).textContent = '';
@@ -347,22 +349,22 @@ function SkillsBuild(char) {
                     i.classList = 'books';
                     idiv.appendChild(i);
 
-                    let alevel = document.createElement('h2');
-                    alevel.className = 'book_level';
-                    alevel.id = select.name + book[0].toString();
-                    char.skillBookBlocks.get(skill)['BookLevels'].set(idiv.dataset.number, alevel);
-                    li.appendChild(alevel);
+                    let level = document.createElement('h2');
+                    level.className = 'book_level';
+                    level.id = select.name + number;
+                    char.skillBookBlocks.get(skill)['BookLevels'].set(idiv.dataset.number, level);
+                    li.appendChild(level);
 
-                    let alocation = document.createElement('a');
-                    alocation.textContent = book[1].location;
-                    alocation.lang = 'ru';
-                    li.appendChild(alocation);
+                    let location = document.createElement('a');
+                    location.textContent = book.location;
+                    location.lang = 'ru';
+                    li.appendChild(location);
 
-                    let adetails = document.createElement('a');
-                    adetails.textContent = book[1].details;
-                    adetails.lang = 'ru';
-                    adetails.className = 'details';
-                    li.appendChild(adetails);
+                    let details = document.createElement('a');
+                    details.textContent = book.details;
+                    details.lang = 'ru';
+                    details.className = 'details';
+                    li.appendChild(details);
 
                 }
                 liSet.add(li)
@@ -494,7 +496,6 @@ function toMaxLevel() {
             Skill_up(skill, char);
         }
         if (char.IsPerkLevel()) {
-            console.log(char.Abilities_Availible.get(arr[char.level / 2 - 1]))
             Ability_Add(char, char.Abilities_Availible.get(arr[char.level / 2 - 1]))
         }
         LevelUp(char);
