@@ -214,15 +214,15 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     RequirementsCheck(char) {
-      return (char.SPECIAL.Agility.value >= 4);
+      return (char.SPECIAL.Intelligence.value >= 4);
     },
     Add(char) {
       char.skillbook_bonus = 4;
-      char.skillsByLevel[char.level - 1][skillbook_bonus] = 4;
+      char.skillsByLevel[char.level - 1]['skillbook_bonus'] = 4;
     },
     Remove() {
       char.skillbook_bonus = 3;
-      char.skillsByLevel[char.level - 1][skillbook_bonus] = 3;
+      char.skillsByLevel[char.level - 1]['skillbook_bonus'] = 3;
     },
     type: 'levelup',
   },
@@ -1325,8 +1325,10 @@ FNV_Abilities = {
     RequirementsCheck(char) {
       return char.SPECIAL['Intelligence'].value < 10;
     },
-    Add(char) {
+    Add(char,...rest) {
       char.SPECIAL['Intelligence'].value += 1;
+      console.info('level:'+char.level)
+      console.info(rest)
     },
     Remove() {
       char.SPECIAL['Intelligence'].value -= 1;
@@ -1375,16 +1377,19 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Ghost Hunter': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Sierra Madre Martini': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Elijah\'s Last Words': {
     rangs: 1,
@@ -1393,6 +1398,7 @@ FNV_Abilities = {
       return (char.Main_Abilities['Elijah\'s Ramblings'].rang == 0);
     },
     type: 'special',
+    level_taken: null,
   },
   'Elijah\'s Ramblings': {
     rangs: 1,
@@ -1401,6 +1407,7 @@ FNV_Abilities = {
       return (char.Main_Abilities['Elijah\'s Last Words'].rang == 0);
     },
     type: 'special',
+    level_taken: null,
   },
   'Brainless': {
     rangs: 1,
@@ -1415,6 +1422,7 @@ FNV_Abilities = {
       char.derived['dr'].mod -= 5;
     },
     type: 'special',
+    level_taken: null,
   },
   'Heartless': {
     rangs: 1,
@@ -1429,6 +1437,7 @@ FNV_Abilities = {
       char.derived['pr'].base -= 100;
     },
     type: 'special',
+    level_taken: null,
   },
   'Spineless': {
     rangs: 1,
@@ -1443,6 +1452,7 @@ FNV_Abilities = {
       char.derived['dr'].base -= 1;
     },
     type: 'special',
+    level_taken: null,
   },
   'Big Brained': {
     rangs: 1,
@@ -1457,6 +1467,7 @@ FNV_Abilities = {
       char.derived['dr'].mod -= 10;
     },
     type: 'special',
+    level_taken: null,
   },
   'Cardiac Arrest': {
     rangs: 1,
@@ -1471,6 +1482,7 @@ FNV_Abilities = {
       char.derived['pr'].base -= 50;
     },
     type: 'special',
+    level_taken: null,
   },
   'Reinforced Spine': {
     rangs: 1,
@@ -1485,41 +1497,49 @@ FNV_Abilities = {
       char.derived['dr'].base -= 2;
     },
     type: 'special',
+    level_taken: null,
   },
   'DNAgent': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'DNAvenger': {
     rangs: 3,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Implant C-13': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Implant M-5': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Implant Y-3': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Implant Y-7': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'The Bear-Slayer': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
     Increased: [],
     points: 1,
     spent: 0,
@@ -1569,6 +1589,7 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
     Increased: [],
     points: 1,
     spent: 0,
@@ -1621,6 +1642,7 @@ FNV_Abilities = {
       return (char.Main_Abilities['Divide Survivor'].rang == 0 && char.Main_Abilities['The Bear-Slayer'].rang == 0 && char.Main_Abilities['Scourge of the East'].rang == 0);
     },
     type: 'special',
+    level_taken: null,
     Increased: [],
     points: 1,
     spent: 0,
@@ -1673,6 +1695,8 @@ FNV_Abilities = {
       return (char.Main_Abilities['Dead Man\'s Burden'].rang == 0 && char.Main_Abilities['The Bear-Slayer'].rang == 0 && char.Main_Abilities['Scourge of the East'].rang == 0);
     },
     type: 'special',
+    level_taken: null,
+    level_taken: null,
     Increased: [],
     points: 1,
     spent: 0,
@@ -1722,11 +1746,13 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Marked': {
     rangs: 1,
     rang: 0,
     type: 'special',
+    level_taken: null,
   },
   'Legion Assault': {
   },

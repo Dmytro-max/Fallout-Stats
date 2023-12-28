@@ -1,7 +1,3 @@
-// const { Stats } = require("fs")
-
-// const { before } = require("node:test")
-
 Desc = document.querySelector('#Description')
 // let Traits = document.querySelectorAll('#Traits>.Stats>div')
 const Special = document.querySelector("#SPECIAL")
@@ -48,7 +44,7 @@ let ImplantsAdded = document.querySelector('#Implants_Abilities .added');
 
 function BuildAbilities(char) {
     for (let key in char.Main_Abilities) {
-        AbilitiesBlocksBuild(char.Main_Abilities[key], key);
+        AbilitieBlockBuild(char.Main_Abilities[key], key);
         let av_block = char.Abilities_Availible.get(key);
         let added_block = char.Abilities_Added.get(key);
 
@@ -69,11 +65,9 @@ function BuildAbilities(char) {
                 break;
         }
     }
-    function AbilitiesBlocksBuild(perk, key) {
+    function AbilitieBlockBuild(perk, key) {
         let name = key;
-        // let rangs = perk.rangs;
-        // let rang = perk.rang;
-        // let requirements_text = perk.requirements_text !== (undefined || null) ? perk.requirements_text : '';
+
         let av_block = document.createElement('div');
         av_block.id = name;
         av_block.classList = 'ability main';
@@ -82,14 +76,16 @@ function BuildAbilities(char) {
 
         char.Abilities_Availible.set(key, av_block);
         char.Abilities_Added.set(key, added_block);
-
-        added_block.addEventListener('dblclick', () => (Ability_Remove(char, av_block.id), FNV(char)))
+        //av_block.addEventListener('contextmenu', () => (av_block.classList.toggle('desired')))
 
         av_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
         added_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
         //
         av_block.addEventListener('click', () => Targeting(av_block))
         added_block.addEventListener('click', () => Targeting(added_block))
+
+        added_block.addEventListener('dblclick', () => (Ability_Remove(char, av_block.id), FNV(char)))
+        //if ability require some more specific actions from player(choosing parameter to increase)
         if ('SpecialWindow' in perk) {
             SpecialWindowCreate(char, perk, name);
         }
@@ -164,6 +160,7 @@ function InsertAbilities(char) {
         }
 
         AbilityInfoFill();
+        //Filling up to date ability info(is it taken, how many rangs etc...)
         function AbilityInfoFill() {
             let name = perk.name;
             let rangs = perk.rangs;
@@ -176,13 +173,49 @@ function InsertAbilities(char) {
             }
             else {
                 av_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-                added_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+                added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level_taken}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
             }
+
             let description_text = perk.Description;
             let Av_Additional = document.createElement('div');
             Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
             Av_Additional.className = 'additional';
             let Ad_Additional = Av_Additional.cloneNode(true);
+
+
+            let idiv = document.createElement('div');
+            idiv.className = 'unChecked';
+
+            idiv.addEventListener('click', CheckboxActivate)
+
+            function CheckboxActivate(event) {
+                target = event.target;
+                console.log(target);
+                let div = event.target.closest('div');
+                console.log(div);
+                number = div.dataset.number;
+                skill = div.dataset.skill;
+
+                if (div.classList.contains('unChecked')) {
+                    char.WishedAbilitiesAmount += 1;
+
+                    div.classList.replace("unChecked", "Checked");
+                    div.closest('div.ability').classList.add("desired");
+                }
+                else {
+                    char.WishedAbilitiesAmount -= 1;
+
+                    div.classList.replace("Checked", "unChecked");
+                    div.closest('div.ability').classList.remove("desired");
+                }
+            }
+            av_block.prepend(idiv);
+
+            let i = document.createElement('i');
+            i.classList = 'checkbox';
+            idiv.prepend(i);
+
+
             if (perk.RangsAdded?.()) {
                 Ad_Additional.insertAdjacentHTML('beforeend', '<h3>Ранги:</h3>')
                 let gen = perk.RangsAdded();
@@ -208,6 +241,86 @@ function InsertAbilities(char) {
     }
 }
 
+//!!
+function AbilityInfoFill() {
+    let name = perk.name;
+    let rangs = perk.rangs;
+    let rang = perk.rang;
+    let requirements_text = perk.requirements_text !== (undefined || null) ? perk.requirements_text : '';
+
+    if (perk.type == 'levelup') {
+        av_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}|${perk.level_taken}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+    }
+    else {
+        av_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level_taken}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+    }
+
+    let description_text = perk.Description;
+    let Av_Additional = document.createElement('div');
+    Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
+    Av_Additional.className = 'additional';
+    let Ad_Additional = Av_Additional.cloneNode(true);
+
+
+    let idiv = document.createElement('div');
+    idiv.className = 'unChecked';
+
+    idiv.addEventListener('click', CheckboxActivate)
+
+    function CheckboxActivate(event) {
+        target = event.target;
+        console.log(target);
+        let div = event.target.closest('div');
+        console.log(div);
+        number = div.dataset.number;
+        skill = div.dataset.skill;
+
+        if (div.classList.contains('unChecked')) {
+            char.WishedAbilitiesAmount += 1;
+
+            div.classList.replace("unChecked", "Checked");
+            div.closest('div.ability').classList.add("desired");
+        }
+        else {
+            char.WishedAbilitiesAmount -= 1;
+
+            div.classList.replace("Checked", "unChecked");
+            div.closest('div.ability').classList.remove("desired");
+        }
+    }
+    av_block.prepend(idiv);
+
+    let i = document.createElement('i');
+    i.classList = 'checkbox';
+    idiv.prepend(i);
+
+
+    if (perk.RangsAdded?.()) {
+        Ad_Additional.insertAdjacentHTML('beforeend', '<h3>Ранги:</h3>')
+        let gen = perk.RangsAdded();
+        let i = 1;
+        for (let value of gen) {
+            let rang_text = document.createElement('a');
+            rang_text.textContent = `${i}. ${value}`;
+            Ad_Additional.appendChild(rang_text);
+            i++;
+        }
+    }
+
+    if ('SpecialWindow' in perk) {
+        Av_Additional.appendChild(perk.SpecialWindow['window']);
+    }
+    else if ('SkillWindow' in perk) {
+        Av_Additional.appendChild(perk.SkillWindow['window']);
+    }
+
+    av_block.appendChild(Av_Additional);
+    added_block.appendChild(Ad_Additional);
+}
+
+
 function SkillsBuild(char) {
     liSet = new Set();
     for (key in char.skills) {
@@ -215,44 +328,53 @@ function SkillsBuild(char) {
         let skillObject = {
             name: key,
         }
-        // SkillFullCreate(key, char);
-        // SkillFullCreate(key, char) 
-        // {
-        let fulldiv = document.createElement('div');
-        fulldiv.className = 'full';
+        SkillFullCreate(key, char);
+        function SkillFullCreate(key, char) {
+            let fulldiv = document.createElement('div');
+            fulldiv.className = 'full';
 
-        let skill = char.skills[key];
-        let maindiv = SkillMainCreate(skillObject, skill);
-        maindiv.addEventListener('click', () => (Choose_prize(char, maindiv.id, maindiv),
-            FNV(char), ElemDescription(Desc, char.skills[maindiv.id])))
+            let skill = char.skills[key];
+            let maindiv = SkillMainCreate(skillObject, skill);
+            maindiv.addEventListener('click', () => (Choose_prize(char, maindiv.id, maindiv),
+                FNV(char), ElemDescription(Desc, char.skills[maindiv.id])))
 
-        fulldiv.append(maindiv);
+            fulldiv.append(maindiv);
 
-        let down = document.createElement('button');
-        down.id = key;
-        down.className = 'down';
-        down.textContent = '-';
-        down.addEventListener('click', () => (Skill_down(down.id, char), FNV(char)))
-        down.disabled = true;
-        fulldiv.appendChild(down);
+            let down = document.createElement('button');
+            down.id = key;
+            down.className = 'down';
+            down.textContent = '-';
+            down.addEventListener('click', () => (Skill_down(down.id, char), FNV(char)))
+            down.disabled = true;
+            fulldiv.appendChild(down);
 
-        let up = document.createElement('button');
-        up.id = key;
-        up.className = 'up';
-        up.addEventListener('click', () => (Skill_up(up.id, char), FNV(char)))
-        up.textContent = '+';
-        up.disabled = true;
-        fulldiv.appendChild(up);
+            let up = document.createElement('button');
+            up.id = key;
+            up.className = 'up';
+            up.addEventListener('click', () => (Skill_up(up.id, char), FNV(char)))
+            up.textContent = '+';
+            up.disabled = true;
+            fulldiv.appendChild(up);
 
-        let ul = SkillBooksFill(key, char);
-        // }
+            let ul = SkillBooksFill(key, char);
+            fulldiv.appendChild(ul);
 
+            skillObject['up'] = up;
+            skillObject['down'] = down;
+            char.skillBlocks.set(key, skillObject);
+
+            let Stats = (document.querySelector('#Skills>.Stats'))
+            Stats.append(fulldiv)
+        }
 
         function SkillMainCreate(skillObject, skill) {
             let maindiv = document.createElement('div')
             maindiv.id = key;
             maindiv.classList = `skill main unChecked`;
-            maindiv.appendChild(document.createElement('i'));
+
+            let i = document.createElement('i');
+            i.classList = 'checkbox'
+            maindiv.appendChild(i);
 
             let img = document.createElement('img');
             img.src = `Icons/${key}.webp`;
@@ -306,8 +428,8 @@ function SkillsBuild(char) {
                 li.appendChild(location);
                 li.appendChild(details);
 
-                for (let i=0; i<char.skills[key].Books.length; i++) {
-                    fillBooks(li, char.skills[key].Books[i],i, key);
+                for (let i = 0; i < char.skills[key].Books.length; i++) {
+                    fillBooks(li, char.skills[key].Books[i], i, key);
                 }
                 ul.appendChild(li);
 
@@ -346,7 +468,7 @@ function SkillsBuild(char) {
                     li.appendChild(idiv);
 
                     let i = document.createElement('i');
-                    i.classList = 'books';
+                    i.classList = 'books checkbox';
                     idiv.appendChild(i);
 
                     let level = document.createElement('h2');
@@ -365,57 +487,44 @@ function SkillsBuild(char) {
                     details.lang = 'ru';
                     details.className = 'details';
                     li.appendChild(details);
-
                 }
                 liSet.add(li)
                 return ul;
             }
-
         }
 
-        fulldiv.appendChild(ul);
-
-        skillObject['up'] = up;
-        skillObject['down'] = down;
-        char.skillBlocks.set(key, skillObject);
-        // char.skillBlocks.set(key, {
-        //     name: key,
-        //     value: value,
-        //     up: up,
-        //     down: down,
-        //     block: maindiv,
-        // })
-
-        let Stats = (document.querySelector('#Skills>.Stats'))
-        Stats.append(fulldiv)
     }//intendation for books
-    const skillsHeadHeight = 3.12
-    const skillBlockHeight = 2.8
-    const rem = 16
 
-    const totalNumberOfSkills = Object.keys(char.skills).length
+    SkillBooksPositioning(liSet)
+    function SkillBooksPositioning(liSet) {
+        const skillsHeadHeight = 3.12
+        const skillBlockHeight = 2.8
+        const rem = 16
 
-    let number = 0;
-    for (elem of liSet) {
-        elemHeight = elem.offsetHeight
-        if ((elemHeight * 0.3) / rem < skillsHeadHeight + skillBlockHeight * number) {
-            elem.style.top = -(elemHeight * 0.3) / rem + 'rem';
+        const totalNumberOfSkills = Object.keys(char.skills).length
+
+        let number = 0;
+        for (elem of liSet) {
+            elemHeight = elem.offsetHeight / rem
+            //if elem height is lower than position
+            if ((elemHeight * 0.3) < skillsHeadHeight + skillBlockHeight * number) {
+                elem.style.top = -(elemHeight * 0.3) + 'rem';
+            }
+            else {
+                elem.style.top = -3.12 + 'rem'
+            }
+            //if elem height is higher than height of skillBlocks left
+            if ((elemHeight) > skillBlockHeight * (totalNumberOfSkills - number - 1)) {
+                elem.style.top = -(elemHeight - skillBlockHeight * (totalNumberOfSkills - number)) + 'rem'
+            }
+            number++;
         }
-        else {
-            elem.style.top = -3.12 + 'rem'
-        }
-        if ((elemHeight * 0.3) / rem > skillBlockHeight * (totalNumberOfSkills - number - 1)) {
-            elem.style.top = -(elemHeight / rem - skillBlockHeight * (totalNumberOfSkills - number)) + 'rem'
-        }
-        number++;
     }
-    // for (let i = 2; i <= char.max_level; i++) {
-    //     levelSelect.insertAdjacentHTML('beforeend', `<option value="${i}">${i}</option>`);
-    // }
+
     CharlevelChoose.insertAdjacentHTML('beforeend', `<option value="${char.level}">${char.level}</option>`);
     for (let key in char.skills) {
         char.skillBookBlocks.get(key)['select'].insertAdjacentHTML('beforeend', `<option value="${char.level}">${char.level}</option>`);
-        char.skillBookBlocks.get(key)['select'].selectedIndex = CharlevelChoose.selectedIndex;
+        char.skillBookBlocks.get(key)['select'].selectedIndex = char.level - 1;
     }
 }
 const DerivedBlock = document.querySelector('#Derived');
@@ -428,7 +537,7 @@ function DerivedBuild(char) {
         let value = document.createElement('a');
         value.className = 'derived_value';
         value.id = key;
-        // value.textContent = char.derived[key].value;
+
         char.derivedBlocks.set(key, value);
         div.appendChild(name);
         div.appendChild(value);
@@ -444,6 +553,7 @@ function TraitsBuild(char) {
         traitDiv.classList = "main unChecked";
 
         let i = document.createElement("i");
+        i.classList = 'checkbox';
         traitDiv.appendChild(i);
 
         let img = document.createElement("img");
@@ -460,6 +570,60 @@ function TraitsBuild(char) {
             ElemDescription(Desc, char.traits[key])))
     }
 }
+//to finish
+function SpecialBuild(char) {
+    for (key in char.SPECIAL) {
+
+        let SpecialObject = {
+        }
+        SpecialFullCreate(key, char, SpecialObject);
+        function SpecialFullCreate(key, char) {
+            let fulldiv = document.createElement('div');
+            fulldiv.className = 'full';
+
+            let img = document.createElement('img');
+            img.src = `Icons/${key}.webp`;
+            fulldiv.appendChild(img);
+
+            let value = document.createElement('a');
+            value.id = key;
+            value.className = 'value';
+            fulldiv.appendChild(value);
+
+            let name = document.createElement('a');
+            name.textContent = skill.name;
+            fulldiv.appendChild(name);
+
+            SpecialObject['value'] = value
+
+            let special = char.SPECIAL[key];
+            fulldiv.addEventListener('click', () => (ElemDescription(Desc, char.skills[value.id])))
+
+            let down = document.createElement('button');
+            down.id = key;
+            down.className = 'down';
+            down.textContent = '-';
+            down.addEventListener('click', () => (Special_down(down.id, char), FNV(char)))
+            down.disabled = true;
+            fulldiv.appendChild(down);
+
+            let up = document.createElement('button');
+            up.id = key;
+            up.className = 'up';
+            up.addEventListener('click', () => (Special_up(up.id, char), FNV(char)))
+            up.textContent = '+';
+            fulldiv.appendChild(up);
+
+            SpecialObject['up'] = up;
+            SpecialObject['down'] = down;
+            char.skillBlocks.set(key, skillObject);
+
+            let Stats = (document.querySelector('#SPECIAL>.Stats'))
+            Stats.append(fulldiv)
+        }
+    }
+}
+
 
 char = new FNVChar(SPECIAL, SPECIAL_Ru, FNV_Abilities, FNV_Abilities_Ru, skills, skills_Ru, Traits, Traits_Ru, Derived, Derived_Ru)
 SpecialBlockCreate(char)
@@ -477,10 +641,12 @@ TraitsBuild(char)
 // LevelUp(char);
 
 arr = [];
-
-BuildAbilities(char)
+console.time('Abilitie test');
+BuildAbilities(char);
 InsertAbilities(char);
+console.timeEnd('Abilitie test');
 let skill = 'Barter';
+//to finish
 function toMaxLevel() {
     while (char.level < char.max_level) {
         // console.log(char.skillsByLevel[char.level - 1]['spent'] < char.SkillPointsCount(char))

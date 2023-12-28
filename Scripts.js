@@ -132,6 +132,7 @@ function Ability_Add(char, name) {
             case 'implant':
                 perk.Add?.(char);
                 perk.rang += 1;
+                perk.level_taken = char.level;
                 break;
         }
         if (!char.PerksbyLevel.has(char.level)) {
@@ -149,9 +150,9 @@ function Ability_Remove(char, name) {
         perk.Remove?.(char);
         perk.rang -= 1;
         char.PerksbyLevel.get(char.level)[perk.type].delete(name);
+
         switch (perk.type) {
             case 'levelup':
-                break;
             case 'special':
             case 'implant':
                 break;
@@ -189,7 +190,7 @@ function LevelUp(char) {
         RestoringLevel()
     }
 
-    else if (char.levels == 1 && char.Special_BonusPoints == 0 && char.prize_skillsNum == 0) {
+    else if (levels == 1 && char.Special_BonusPoints == 0 && char.prize_skillsNum == 0) {
         ToSecondLevel()
     }
 
@@ -206,6 +207,7 @@ function LevelUp(char) {
         CharlevelChoose.insertAdjacentHTML('beforeend', `<option value="${char.level + 1}">${char.level + 1}</option>`);
         CharlevelChoose.selectedIndex += 1;
 
+        //level of gaining book after getting new level
         for (let key in char.skills) {
             char.skillBookBlocks.get(key)['select'].insertAdjacentHTML('beforeend', `<option value="${char.level + 1}">${char.level + 1}</option>`);
             char.skillBookBlocks.get(key)['select'].selectedIndex = CharlevelChoose.selectedIndex;
@@ -234,9 +236,19 @@ function LevelUp(char) {
     function RestoringLevel() {
         console.log('restore: ' + levels)
         char.level += 1;
+        if (char.PerksbyLevel.has(char.level)) {
+            let perks = char.PerksbyLevel.get(char.level)
+
+            for (let key in (perks)) {
+                for (let ab of perks[key]) {
+                    char.Main_Abilities[(ab)].Add?.(char);
+                }
+            }
+        }
 
         for (let key in char.skills) {
             char.skills[key].bonus += char.skillsByLevel[char.level - 1][key];
+
 
             if (char.skillsByLevel[char.level - 1][key] > 0) {
                 char.skillBlocks.get(key).down.disabled = false;
@@ -260,19 +272,11 @@ function LevelUp(char) {
         // }
         ///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        if (char.PerksbyLevel.has(char.level)) {//Making Availible to interact previos level ability
-            for (key in char.PerksbyLevel.get(char.level)) {
-                for (let name of char.PerksbyLevel.get(char.level)[key]) {
-                    Ability_Add(char, name);
-                }
-            }
-        }
         CharlevelChoose.selectedIndex += 1;
     }
 
     function NewLevel() {
         for (let key in char.skills) {
-            // char.skillsByLevel[char.level - 1][key] += char.skillsByLevel[char.level - 2][key];
 
             char.skillBookBlocks.get(key)['select'].insertAdjacentHTML('beforeend', `<option value="${char.level + 1}">${char.level + 1}</option>`);
             char.skillBookBlocks.get(key)['select'].selectedIndex = CharlevelChoose.selectedIndex;
@@ -281,7 +285,7 @@ function LevelUp(char) {
         char.level += 1;
 
         char.skillsByLevel[char.level - 1]['skillbook_bonus'] = char.skillbook_bonus;
-        
+
         char.skillsByLevel[char.level - 1]['points'] = Math.floor(char.SkillPointsCount() + Math.floor(char.rest_point));
         char.rest_point += char.SkillPointsCount() - Math.floor(char.SkillPointsCount());
         if (char.rest_point == 1) {//!!
@@ -301,12 +305,22 @@ function LevelUp(char) {
 function LevelDown(char) {
     console.log('Level ' + char.level)
     if (char.level > 2) {
+        console.log('tolevel')
         toLevel()
     }
     else if (char.level > 1) {
         toFirstLevel()
     }
     function toLevel() {
+        if (char.PerksbyLevel.has(char.level)) {
+            let perks = char.PerksbyLevel.get(char.level)
+
+            for (let key in (perks)) {
+                for (let ab of perks[key]) {
+                    char.Main_Abilities[(ab)].Remove?.(char);
+                }
+            }
+        }
         char.level -= 1;
         CharlevelChoose.selectedIndex -= 1;
 
@@ -351,8 +365,8 @@ function LevelJump(char) {
             LevelUp(char);
         }
     }
-    else {//if
-        while (char.level > level) {
+    else if (level < char.level) {//if
+        while (level < char.level) {
             LevelDown(char);
         }
     }
@@ -381,18 +395,6 @@ function FNV(char) {
     max.textContent = `Skill points aveilible ${Math.floor(skill_points) - spent}`;
     need.textContent = `Needed: ${char.need_sp}`
     // CharlevelChoose.textContent = `Уровень Героя ${char.level}`
-
-    // const copyContent = async () => {
-    //     let text = JSON.stringify(char.traits, );
-    //     console.log(text)
-    //     try {
-    //         await navigator.clipboard.writeText(text);
-    //         console.log('Content copied to clipboard');
-    //     } catch (err) {
-    //         console.error('Failed to copy: ', err);
-    //     }
-    // }
-    // copyContent();
 
     for (let key in char.derived) {
         char.derivedBlocks.get(key).textContent = char.derived[key].value(char);

@@ -3,28 +3,23 @@ Traits = {
         name: "",
     },
     'GoodNatured': {
-        Description: 'Обладая доброй душой вы предпочитаите решать вопросы мирным путем. Вы получаете +5 к навыкам "Бартер", "Медицина", "Ремонт", "Наука",  и "Красноречие", но -5 к навыкам "Энергооружие", "Взрывчатка","Оружие", "Холодное оружие" и "Без оружия".',
+        addList: ['Barter', 'Repair', 'Science', 'Speech', 'Medicine'],
+        minusList: ['E_W', 'Explosives', 'Guns', 'M_W', 'Unarmed'],
         PersonalFuncOn(char) {
-            let list = ['Barter', 'Repair', 'Science', 'Speech', 'Medicine'];
-            for (let skill of list) {
-                if (100 - char.skills[skill].value(char) < 5) {
-                    return true;
-                }
-            }
-            for (let skill of list) {
+            for (let skill of this.addList) {
                 char.skills[skill].bonus += 5;
+            }
+            for (let skill of this.minusList) {
+                char.skills[skill].bonus -= 5;
             }
         },
         PersonalFuncOff(char) {
             let list = ['Barter', 'Repair', 'Science', 'Speech', 'Medicine'];
-            for (let skill of list) {
-                if (char.skills[skill].bonus < 5) {
-                    return true;
-                }
-            }
-            for (let skill of list) {
+            for (let skill of this.addList) {
                 char.skills[skill].bonus -= 5;
-                console.log(skill);
+            }
+            for (let skill of this.minusList) {
+                char.skills[skill].bonus += 5;
             }
         },
     },
@@ -117,6 +112,7 @@ Traits = {
         },
     },
 }
+
 Traits_Ru = {
     WildWasteland: {
         name: "Дикая пустошь",

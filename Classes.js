@@ -6,6 +6,7 @@ class FNVChar {
     this.PrizeSkills = new Set();
     this.skillsByLevel = new Array(50);
 
+    //filling character paraameters with merged parameter core and text of neaded language
     this.SPECIAL = {}
     for (let sp in Special) {
       this.SPECIAL[sp] = Object.assign({}, ...[Special[sp], Special_Lan[sp]]);
@@ -51,6 +52,8 @@ class FNVChar {
     }
   }
 
+  WishedAbilitiesAmount = 0
+  MaxWishedAbilitiesAmount = 25
   implants_added = 0
   Special_BonusPoints = 5
   prize_skillsNum = 3
@@ -63,6 +66,7 @@ class FNVChar {
   max_level = 50
   level_reached = 1
   baseSpecial = 1
+  skillValueMax = 100
 
   skill_pointsBonus = 0
   levelsForPerk = 2
