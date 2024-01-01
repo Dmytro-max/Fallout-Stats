@@ -65,18 +65,87 @@ function BuildAbilities(char) {
                 break;
         }
     }
+    
     function AbilitieBlockBuild(perk, key) {
-        let name = key;
-
         let av_block = document.createElement('div');
-        av_block.id = name;
+        av_block.id = key;
         av_block.classList = 'ability main';
-
         let added_block = av_block.cloneNode(true);
+        added_block.style.display = 'none';
 
-        char.Abilities_Availible.set(key, av_block);
+        let name = perk.name;
+        let rangs = perk.rangs;
+        let rang = perk.rang;
+        let requirements_text = perk.requirements_text ?? '';
+
+        let Av_RangArtickle = document.createElement('h4');
+        Av_RangArtickle.className = 'rang'
+        Av_RangArtickle.textContent = `${rang}/${rangs}`
+        let Ad_RangArtickle = Av_RangArtickle.cloneNode(true)
+
+        let Av_level = document.createElement('h4');
+        Av_level.className = 'level'
+        Av_level.textContent = `${perk.level}`
+        let Ad_level = Av_level.cloneNode(true)
+
+
+
+        av_block.innerHTML += `<h4 lang="ru">${name}</h4>`;
+        av_block.append(perk.type == 'levelup' ? Av_level : '');
+        av_block.innerHTML += `<a lang="ru">${requirements_text}</a>`;
+        av_block.append(Av_RangArtickle);
+
+        added_block.innerHTML += `<h4 lang="ru">${name}</h4>`
+        added_block.append(Ad_level);
+        added_block.innerHTML += `<a lang="ru">${requirements_text}</a>`
+        added_block.append(Ad_RangArtickle);
+
+        let description_text = perk.Description;
+        let Av_Additional = document.createElement('div');
+        Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
+        Av_Additional.className = 'additional';
+
+        let Rangs = document.createElement('p');
+        Rangs.className = "rangs"
+        Rangs.innerHTML = perk.RangsAdded?.() ? '<h3>Ранги:</h3>' : '';
+
+        let Ad_Additional = document.createElement('div');
+        Ad_Additional.innerHTML = `<p class="description">${description_text}</p>`;
+        Ad_Additional.className = 'additional';
+        Ad_Additional.appendChild(Rangs)
+
+        let idiv = document.createElement('div');
+        idiv.className = 'unChecked';
+
+        let i = document.createElement('i');
+        i.classList = 'checkbox';
+        idiv.prepend(i);
+
+        av_block.prepend(idiv);
+
+        function CheckboxActivate(div) {
+            if (div.classList.contains('unChecked')) {
+                char.WishedAbilitiesAmount += 1;
+
+                div.classList.replace("unChecked", "Checked");
+                div.closest('div.ability').classList.add("desired");
+            }
+            else {
+                char.WishedAbilitiesAmount -= 1;
+
+                div.classList.replace("Checked", "unChecked");
+                div.closest('div.ability').classList.remove("desired");
+            }
+        }
+       idiv.addEventListener('click', () => (CheckboxActivate(idiv)))
+
+
+        char.Abilities_Availible.set(key,  av_block)
         char.Abilities_Added.set(key, added_block);
-        //av_block.addEventListener('contextmenu', () => (av_block.classList.toggle('desired')))
+
+        av_block.appendChild(Av_Additional);
+        added_block.appendChild(Ad_Additional);
+
 
         av_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
         added_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
@@ -86,17 +155,24 @@ function BuildAbilities(char) {
 
         added_block.addEventListener('dblclick', () => (Ability_Remove(char, av_block.id), FNV(char)))
         //if ability require some more specific actions from player(choosing parameter to increase)
+        perkname = key;
         if ('SpecialWindow' in perk) {
-            SpecialWindowCreate(char, perk, name);
+            SpecialWindowCreate(char, perk, av_block.id);
         }
         else if ('SkillWindow' in perk) {
-            SkillsWindowCreate(char, perk, name);
+            SkillsWindowCreate(char, perk, av_block.id);
         }
         else {
             av_block.addEventListener('dblclick', () => (Ability_Add(char, av_block.id), FNV(char)))
         }
-    }
 
+        if ('SpecialWindow' in perk) {
+            Av_Additional.appendChild(perk.SpecialWindow['window']);
+        }
+        else if ('SkillWindow' in perk) {
+            Av_Additional.appendChild(perk.SkillWindow['window']);
+        }
+    }
 }
 let LastTarget
 function Targeting(target) {
@@ -114,20 +190,21 @@ function InsertAbilities(char) {
     let Check = (perk, key) => {
         let av_block = char.Abilities_Availible.get(key);
         let added_block = char.Abilities_Added.get(key);
-        if (perk.rang < perk.rangs) {
-            av_block.style.display = "grid";
-        }
-        else {
-            av_block.style.display = "none";
-        }
+        // if (perk.rang < perk.rangs) {
+        //     av_block.style.display = "grid";
+        // }
+        // else {
+        //     av_block.style.display = "none";
+        // }
 
-        if (perk.rang > 0) {
-            added_block.style.display = "grid";
-        }
-        else {
-            added_block.style.display = "none";
-        }
+        // if (perk.rang > 0) {
+        //     added_block.style.display = "grid";
+        // }
+        // else {
+        //     added_block.style.display = "none";
+        // }
 
+        //console.log(av_block)
         if (perk.RequirementsCheck?.(char) == false || !char.IsPerkLevel() && perk.type == 'levelup' || (char.IsPerkLevel() && perk.type == 'levelup' &&
             (perk.level > char.level || (char.PerksbyLevel.has(char.level) ? char.PerksbyLevel.get(char.level)['levelup']?.size > 0 : false)))
         ) {
@@ -158,168 +235,8 @@ function InsertAbilities(char) {
         else {
             av_block.classList.add('unAvailible');
         }
-
-        AbilityInfoFill();
-        //Filling up to date ability info(is it taken, how many rangs etc...)
-        function AbilityInfoFill() {
-            let name = perk.name;
-            let rangs = perk.rangs;
-            let rang = perk.rang;
-            let requirements_text = perk.requirements_text !== (undefined || null) ? perk.requirements_text : '';
-
-            if (perk.type == 'levelup') {
-                av_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-                added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}|${perk.level_taken}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-            }
-            else {
-                av_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-                added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level_taken}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-            }
-
-            let description_text = perk.Description;
-            let Av_Additional = document.createElement('div');
-            Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
-            Av_Additional.className = 'additional';
-            let Ad_Additional = Av_Additional.cloneNode(true);
-
-
-            let idiv = document.createElement('div');
-            idiv.className = 'unChecked';
-
-            idiv.addEventListener('click', CheckboxActivate)
-
-            function CheckboxActivate(event) {
-                target = event.target;
-                console.log(target);
-                let div = event.target.closest('div');
-                console.log(div);
-                number = div.dataset.number;
-                skill = div.dataset.skill;
-
-                if (div.classList.contains('unChecked')) {
-                    char.WishedAbilitiesAmount += 1;
-
-                    div.classList.replace("unChecked", "Checked");
-                    div.closest('div.ability').classList.add("desired");
-                }
-                else {
-                    char.WishedAbilitiesAmount -= 1;
-
-                    div.classList.replace("Checked", "unChecked");
-                    div.closest('div.ability').classList.remove("desired");
-                }
-            }
-            av_block.prepend(idiv);
-
-            let i = document.createElement('i');
-            i.classList = 'checkbox';
-            idiv.prepend(i);
-
-
-            if (perk.RangsAdded?.()) {
-                Ad_Additional.insertAdjacentHTML('beforeend', '<h3>Ранги:</h3>')
-                let gen = perk.RangsAdded();
-                let i = 1;
-                for (let value of gen) {
-                    let rang_text = document.createElement('a');
-                    rang_text.textContent = `${i}. ${value}`;
-                    Ad_Additional.appendChild(rang_text);
-                    i++;
-                }
-            }
-
-            if ('SpecialWindow' in perk) {
-                Av_Additional.appendChild(perk.SpecialWindow['window']);
-            }
-            else if ('SkillWindow' in perk) {
-                Av_Additional.appendChild(perk.SkillWindow['window']);
-            }
-
-            av_block.appendChild(Av_Additional);
-            added_block.appendChild(Ad_Additional);
-        }
     }
 }
-
-//!!
-function AbilityInfoFill() {
-    let name = perk.name;
-    let rangs = perk.rangs;
-    let rang = perk.rang;
-    let requirements_text = perk.requirements_text !== (undefined || null) ? perk.requirements_text : '';
-
-    if (perk.type == 'levelup') {
-        av_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}|${perk.level_taken}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-    }
-    else {
-        av_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level_taken}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
-    }
-
-    let description_text = perk.Description;
-    let Av_Additional = document.createElement('div');
-    Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
-    Av_Additional.className = 'additional';
-    let Ad_Additional = Av_Additional.cloneNode(true);
-
-
-    let idiv = document.createElement('div');
-    idiv.className = 'unChecked';
-
-    idiv.addEventListener('click', CheckboxActivate)
-
-    function CheckboxActivate(event) {
-        target = event.target;
-        console.log(target);
-        let div = event.target.closest('div');
-        console.log(div);
-        number = div.dataset.number;
-        skill = div.dataset.skill;
-
-        if (div.classList.contains('unChecked')) {
-            char.WishedAbilitiesAmount += 1;
-
-            div.classList.replace("unChecked", "Checked");
-            div.closest('div.ability').classList.add("desired");
-        }
-        else {
-            char.WishedAbilitiesAmount -= 1;
-
-            div.classList.replace("Checked", "unChecked");
-            div.closest('div.ability').classList.remove("desired");
-        }
-    }
-    av_block.prepend(idiv);
-
-    let i = document.createElement('i');
-    i.classList = 'checkbox';
-    idiv.prepend(i);
-
-
-    if (perk.RangsAdded?.()) {
-        Ad_Additional.insertAdjacentHTML('beforeend', '<h3>Ранги:</h3>')
-        let gen = perk.RangsAdded();
-        let i = 1;
-        for (let value of gen) {
-            let rang_text = document.createElement('a');
-            rang_text.textContent = `${i}. ${value}`;
-            Ad_Additional.appendChild(rang_text);
-            i++;
-        }
-    }
-
-    if ('SpecialWindow' in perk) {
-        Av_Additional.appendChild(perk.SpecialWindow['window']);
-    }
-    else if ('SkillWindow' in perk) {
-        Av_Additional.appendChild(perk.SkillWindow['window']);
-    }
-
-    av_block.appendChild(Av_Additional);
-    added_block.appendChild(Ad_Additional);
-}
-
 
 function SkillsBuild(char) {
     liSet = new Set();

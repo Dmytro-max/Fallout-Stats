@@ -123,6 +123,85 @@ function Choose_trait(char, elem, name) {
     }
 }
 
+function AbilityInfoFill() {
+    let name = perk.name;
+    let rangs = perk.rangs;
+    let rang = perk.rang;
+    let requirements_text = perk?.requirements_text !== (undefined || null) ? perk.requirements_text : '';
+
+    if (perk.type == 'levelup') {
+        av_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level}|${perk.level_taken}</h4><a>${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+    }
+    else {
+        av_block.innerHTML = `<h4>${name}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+        added_block.innerHTML = `<h4>${name}</h4><h4 class='level'>${perk.level_taken}</h4><a lang="ru">${requirements_text}</a><h4 class'rang'>${rang}/${rangs}</h4>`;
+    }
+
+    let description_text = perk.Description;
+    let Av_Additional = document.createElement('div');
+    Av_Additional.innerHTML = `<p class="description">${description_text}</p>`;
+    Av_Additional.className = 'additional';
+    let Ad_Additional = Av_Additional.cloneNode(true);
+
+
+    let idiv = document.createElement('div');
+    idiv.className = 'unChecked';
+
+    idiv.addEventListener('click', CheckboxActivate)
+
+    function CheckboxActivate(event) {
+        target = event.target;
+        console.log(target);
+        let div = event.target.closest('div');
+        console.log(div);
+        number = div.dataset.number;
+        skill = div.dataset.skill;
+
+        if (div.classList.contains('unChecked')) {
+            char.WishedAbilitiesAmount += 1;
+
+            div.classList.replace("unChecked", "Checked");
+            div.closest('div.ability').classList.add("desired");
+        }
+        else {
+            char.WishedAbilitiesAmount -= 1;
+
+            div.classList.replace("Checked", "unChecked");
+            div.closest('div.ability').classList.remove("desired");
+        }
+    }
+    av_block.prepend(idiv);
+
+    let i = document.createElement('i');
+    i.classList = 'checkbox';
+    idiv.prepend(i);
+
+
+    if (perk.RangsAdded?.()) {
+        Ad_Additional.insertAdjacentHTML('beforeend', '<h3>Ранги:</h3>')
+        let gen = perk.RangsAdded();
+        let i = 1;
+        for (let value of gen) {
+            let rang_text = document.createElement('a');
+            rang_text.textContent = `${i}. ${value}`;
+            Ad_Additional.appendChild(rang_text);
+            i++;
+        }
+    }
+
+    if ('SpecialWindow' in perk) {
+        Av_Additional.appendChild(perk.SpecialWindow['window']);
+    }
+    else if ('SkillWindow' in perk) {
+        Av_Additional.appendChild(perk.SkillWindow['window']);
+    }
+
+    av_block.appendChild(Av_Additional);
+    added_block.appendChild(Ad_Additional);
+}
+
+
 function Ability_Add(char, name) {
     if (!char.Abilities_Availible.get(name).classList.contains('unAvailible')) {
         let perk = char.Main_Abilities[name];
@@ -142,6 +221,31 @@ function Ability_Add(char, name) {
             char.PerksbyLevel.get(char.level)[`${perk.type}`] = new Set();
         }
         char.PerksbyLevel.get(char.level)[`${perk.type}`].add(name)
+
+        ChangeInfo()
+        function ChangeInfo() {
+            let added_block = char.Abilities_Added.get(name);
+            if (perk.RangsAdded?.()) {
+                let Rangs = added_block.querySelector('p.rangs')
+                Rangs.innerHTML = ('<h3>Ранги:</h3>')
+                let gen = perk.RangsAdded();
+                let number = 1;
+                for (let value of gen) {
+                    let rang_text = document.createElement('a');
+                    rang_text.textContent = `${number}. ${value}`;
+                    Rangs.appendChild(rang_text);
+                    number++;
+                }
+            }
+            added_block.querySelector('h4.rang').textContent = `${perk.rang}/${perk.rangs}`
+            added_block.querySelector('h4.level').textContent = `${perk.level_taken}${(perk.type == 'levelup' && perk?.level != undefined) ? '|' + perk?.level : ''}`
+            added_block.style.display = 'grid'
+
+
+            let av_block = char.Abilities_Availible.get(name);
+            av_block.querySelector('h4.rang').textContent = `${perk.rang}/${perk.rangs}`
+            perk.rang == perk.rangs ? av_block.style.display = 'none' : ''
+        }
     }
 }
 function Ability_Remove(char, name) {
@@ -157,8 +261,30 @@ function Ability_Remove(char, name) {
             case 'implant':
                 break;
         }
-    }
 
+        ChangeInfo()
+        function ChangeInfo() {
+            let added_block = char.Abilities_Added.get(name);
+            if (perk.RangsAdded?.()) {
+                let Rangs = added_block.querySelector('p.rangs')
+                Rangs.innerHTML = ('<h3>Ранги:</h3>')
+                let gen = perk.RangsAdded();
+                let number = 1;
+                for (let value of gen) {
+                    let rang_text = document.createElement('a');
+                    rang_text.textContent = `${number}. ${value}`;
+                    Rangs.appendChild(rang_text);
+                    number++;
+                }
+            }
+            added_block.querySelector('h4.rang').textContent = `${perk.rang}/${perk.rangs}`
+            added_block.querySelector('h4.level').textContent = `${perk.level_taken}${(perk.type == 'levelup' && perk?.level != undefined) ? '|' + perk?.level : ''}`
+            perk.rang == 0 ? added_block.style.display = 'none' : ''
+
+            let av_block = char.Abilities_Availible.get(name);
+            av_block.querySelector('h4.rang').textContent = `${perk.rang}/${perk.rangs}`
+        }
+    }
 }
 
 // let levelSelect = document.querySelector('#ImplantlevelChoose')
@@ -469,6 +595,7 @@ function SpecialWindowCreate(char, elem, Perkname) {
                 elem.SPECIAL[name] -= 1;
                 elem.points += 1;
                 elem.spent -= 1;
+                console.log('up')
 
                 SpecialWindow['ups'].get(name).disabled = false;
 
@@ -534,7 +661,11 @@ function SpecialWindowCreate(char, elem, Perkname) {
         accept.textContent = 'Готово'
         accept.addEventListener('click', () => {
             let name = elem.Increased[elem.rang]
-            SpecialWindow['downs'].get(name).disabled = true;
+            for(key in elem.SPECIAL){
+                SpecialWindow['downs'].get(key).disabled = true;
+            }
+            reset.disabled = true;
+            accept.disabled = true;
 
             Ability_Add(char, Perkname);
             FNV(char);

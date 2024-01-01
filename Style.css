@@ -228,18 +228,18 @@ img {
 
 .area .List .head{
     display: grid;
-    grid-template-columns: 45% 4% 37% 15%;
+    grid-template-columns: 40% 4% 43% 13%;
     height: fit-content;
 }
 
 .area .Choose_list .head{
-    grid-template-columns: 10% 40% 4% 32% 15%;
+    grid-template-columns: 7% 40% 4% 35% 15%;
     
 }
 
 .area .ability {
     display: grid;
-    grid-template-columns: 46.5% 5.5% 40% 8%;
+    grid-template-columns: 36.5% 10.5% 45% 8%;
     height: fit-content;
     border-color: var(--main-nonborder-color);
     border: solid var(--main-nonborder-color);
@@ -252,14 +252,14 @@ img {
 #Implants_Abilities .Choose_list .head,
 #Special_Abilities .Choose_list .head {
     display: grid;
-    grid-template-columns: 5% 35% 47% 13%;
+    grid-template-columns: 5% 35% 47% 14%;
     height: fit-content;
 }
 
 #Implants_Abilities .Choose_list .ability,
 #Special_Abilities .Choose_list .ability {
     display: grid;
-    grid-template-columns: minmax(42%, 42%) minmax(auto, 50%) minmax(auto, 8%);
+    grid-template-columns: 7% 40% 45%  8%;
     height: fit-content;
 }
 
@@ -391,7 +391,7 @@ img {
     display: grid;
     min-height: 2.675rem;
     line-height: 1.4rem;
-    grid-template-columns: 1.55rem 2.25rem 11.8rem;
+    grid-template-columns: 1.75rem 2.35rem 11.3rem;
 }
 
 #Traits div a {
@@ -440,12 +440,13 @@ img {
     display: grid;
     grid-row: 3/4;
     grid-column: 3;
-    height: 7.475rem;
+    height: 6.675rem;
     /* height: fit-content; */
     width: 25.05rem;
     /*    grid-template-rows: 30px 78px;*/
     max-height: fit-content;
     border-width: 3px 3px 3px 1px;
+    overflow: hidden;
 }
 
 #Description h2 {

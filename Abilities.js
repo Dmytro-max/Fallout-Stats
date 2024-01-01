@@ -1266,6 +1266,7 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Strength'].value < 10;
     },
@@ -1275,11 +1276,13 @@ FNV_Abilities = {
     Remove() {
       char.SPECIAL['Strength'].value -= 1;
     },
+    level_taken: null,
   },
   'Perception Implant': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Perception'].value < 10;
     },
@@ -1289,11 +1292,13 @@ FNV_Abilities = {
     Remove() {
       char.SPECIAL['Perception'].value -= 1;
     },
+    level_taken: null,
   },
   'Endurance Implant': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Endurance'].value < 10;
     },
@@ -1303,11 +1308,13 @@ FNV_Abilities = {
     Remove() {
       char.SPECIAL['Endurance'].value -= 1;
     },
+    level_taken: null,
   },
   'Charisma Implant': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Charisma'].value < 10;
     },
@@ -1317,11 +1324,13 @@ FNV_Abilities = {
     Remove() {
       char.SPECIAL['Charisma'].value -= 1;
     },
+    level_taken: null,
   },
   'Intelligence Implant': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Intelligence'].value < 10;
     },
@@ -1333,11 +1342,13 @@ FNV_Abilities = {
     Remove() {
       char.SPECIAL['Intelligence'].value -= 1;
     },
+    level_taken: null,
   },
   'Agility Implant': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Agility'].value < 10;
     },
@@ -1352,6 +1363,7 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
     RequirementsCheck(char) {
       return char.SPECIAL['Luck'].value < 10;
     },
@@ -1366,11 +1378,13 @@ FNV_Abilities = {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
   },
   'Sub-Dermal Armor': {
     rangs: 1,
     rang: 0,
     type: 'implant',
+    level_taken: null,
   },
 
   'Coin Operator': {
@@ -1755,12 +1769,29 @@ FNV_Abilities = {
     level_taken: null,
   },
   'Legion Assault': {
+    rangs: 1,
+    rang: 0,
+    type: 'special',
+    level_taken: null,
   },
   'Ranger Takedown': {
+    rangs: 1,
+    rang: 0,
+    type: 'special',
+    level_taken: null,
+    rangs: 1,
   },
   'Khan Trick': {
+    rangs: 1,
+    rang: 0,
+    type: 'special',
+    level_taken: null,
   },
   'Scribe Counter': {
+    rangs: 1,
+    rang: 0,
+    type: 'special',
+    level_taken: null,
   },
 }
 
@@ -3282,21 +3313,21 @@ FNV_Abilities_Ru = {
   "Legion Assault": {
     name: "Атака легионера",
     requirements_text: "Поговорить с Луцием; Без оружия:50; нейтрал в Легионе",
-    Description: "undefined",
+    Description: "Уникальная атака без оружия. Лучшие воины Цезаря, легендарные преторианцы, применяют против врагов знаменитую атаку легионера. Чтобы атаковать таким образом, разгоняйтесь и выполняйте силовую атаку.",
   },
   "Ranger Takedown": {
     name: "Бросок рейнджера",
     requirements_text: "Поговорить с рейнджером Энди",
-    Description: "undefined",
+    Description: "Уникальная атака без оружия. Будучи захвачены врасплох без оружия, рейнджеры Новой Калифорнийской Республики полагаются на свой бросок, чтобы быстро нейтрализовать врагов. Чтобы применить «бросок рейнджера», выполните силовую атаку, двигаясь назад.",
   },
   "Khan Trick": {
     name: "Ханское наследие",
     requirements_text: "Выполнить квест «Медовый месяц в Аба-Даба»",
-    Description: "undefined",
+    Description: "	Уникальная атака без оружия. Изучив грязные трюки Великих ханов, вы можете швырнуть пыль в лицо врагу и временно ослепить его. Чтобы сделать это, выполните силовую атаку, двигаясь налево или направо.",
   },
   "Scribe Counter": {
     name: "Приём писца",
     requirements_text: "Передать Веронике костюм — наряд общества «Белая перчатка»",
-    Description: "undefined",
+    Description: "Уникальная атака без оружия. Обычно Братство не уделяет внимание обучению писцов владению высокотехнологичными образцами огнестрельного и энергетического оружия. Им приходится учиться мастерскому использованию отточенных приемов защитного и контратакующего типа, таких, как «Приём писца». Атакуйте противника сразу после успешной блокировки удара в ближнем бою.",
   },
 }
