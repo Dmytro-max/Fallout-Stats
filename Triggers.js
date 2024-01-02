@@ -29,7 +29,10 @@ const fnv = document.querySelector(".FNV")
 //     console.log(char),
 //     FNV(char)
 // );
-
+let DesiredLevelUpPerks = document.querySelector('#DesiredLevelUpPerks')
+let LevelForAllDesired = document.querySelector('#LevelForAllDesired')
+let DesiredSpecialPerks = document.querySelector('#DesiredSpecialPerks')
+let DesiredImplantPerks = document.querySelector('#DesiredImplantPerks')
 
 let AbilitiesBlock = document.querySelector('#Abilities');
 let Level_Availible = document.querySelector('.Choose_list');
@@ -41,6 +44,7 @@ let Added = document.querySelector('#Special_Abilities .added');
 
 let ImplantsAvailible = document.querySelector('#Implants_Abilities .Choose_list');
 let ImplantsAdded = document.querySelector('#Implants_Abilities .added');
+
 
 function BuildAbilities(char) {
     for (let key in char.Main_Abilities) {
@@ -125,13 +129,49 @@ function BuildAbilities(char) {
 
         function CheckboxActivate(div) {
             if (div.classList.contains('unChecked')) {
-                char.WishedAbilitiesAmount += 1;
+                switch (perk.type) {
+                    case 'levelup':
+                        char.WishedLevelUpAbilitiesAmount += 1;
+                        DesiredLevelUpPerks.textContent = `Желанные способности: ${char.WishedLevelUpAbilitiesAmount}`
+                        LevelForAllDesired.textContent = `Уровень для получения: ${char.WishedLevelUpAbilitiesAmount*char.levelsForPerk}`
+
+                        if(char.WishedLevelUpAbilitiesAmount * char.levelsForPerk > char.max_level){
+                            LevelForAllDesired.style.color = 'red'
+                        }
+                        break;
+                    case 'special':
+                        char.WishedSpecialAbilitiesAmount += 1;
+                        DesiredSpecialPerks.textContent = `Желанные способности: ${char.WishedSpecialAbilitiesAmount}`
+                        break;
+                    case 'implant':
+                        char.WishedImplantAbilitiesAmount += 1;
+                        DesiredImplantPerks.textContent = `Желанные способности: ${char.WishedImplantAbilitiesAmount}`
+                        break;
+                }
 
                 div.classList.replace("unChecked", "Checked");
                 div.closest('div.ability').classList.add("desired");
             }
             else {
-                char.WishedAbilitiesAmount -= 1;
+                switch (perk.type) {
+                    case 'levelup':
+                        char.WishedLevelUpAbilitiesAmount -= 1;
+                        DesiredLevelUpPerks.textContent = `Желанные способности: ${char.WishedLevelUpAbilitiesAmount}`
+                        LevelForAllDesired.textContent = `Уровень для получения: ${char.WishedLevelUpAbilitiesAmount*char.levelsForPerk}`
+
+                        if(char.WishedLevelUpAbilitiesAmount * char.levelsForPerk <= char.max_level){
+                            LevelForAllDesired.style.color = '--main-text-color'
+                        }
+                        break;
+                    case 'special':
+                        char.WishedSpecialAbilitiesAmount -= 1;
+                        DesiredSpecialPerks.textContent = `Желанные способности: ${char.WishedSpecialAbilitiesAmount}`
+                        break;
+                    case 'implant':
+                        char.WishedImplantAbilitiesAmount -= 1;
+                        DesiredImplantPerks.textContent = `Желанные способности: ${char.WishedImplantAbilitiesAmount}`
+                        break;
+                }
 
                 div.classList.replace("Checked", "unChecked");
                 div.closest('div.ability').classList.remove("desired");

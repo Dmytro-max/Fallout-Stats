@@ -52,7 +52,9 @@ class FNVChar {
     }
   }
 
-  WishedAbilitiesAmount = 0
+  WishedLevelUpAbilitiesAmount = 0
+  WishedSpecialAbilitiesAmount = 0
+  WishedImplantAbilitiesAmount = 0
   MaxWishedAbilitiesAmount = 25
   implants_added = 0
   Special_BonusPoints = 5

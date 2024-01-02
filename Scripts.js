@@ -767,6 +767,7 @@ function SkillsWindowCreate(char, elem, Perkname) {
         wrapdiv.classList = 'main unChecked';
         wrapdiv.id = id;
         let i = document.createElement('i');
+        i.className = 'checkbox';
 
         let name = char.skills[key].name;
 
