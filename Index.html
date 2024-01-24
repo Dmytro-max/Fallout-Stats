@@ -16,36 +16,47 @@
 </head>
 
 <body>
-    <nav>
-        <!-- <div>
+    <div class="topbar">
+        <nav>
+            <!-- <div>
             <img id="img1" src="Book.png">
             <div class="about">
                 <h2>Про автора:</h2>
                 <p></p>
             </div>
         </div> -->
-        <div class="links">
-            <ul>
-                <li><a href="" class="F3">Fallout 3</a></li>
-                <li><a class="FNV">Fallout New Vegas</a></li>
-                <li><a href="" class="Len">Fallout</a></li>
-            </ul>
-        </div>
-        <div>
-            <select name="language" id="langSelect">
-                <!-- <label for="enOption">
+            <div class="links">
+                <ul>
+                    <li><a href="" class="F3">Fallout 3</a></li>
+                    <li><a class="FNV">Fallout New Vegas</a></li>
+                    <li><a href="" class="Len">Fallout</a></li>
+                </ul>
+            </div>
+            <div>
+                <select name="language" id="langSelect">
+                    <!-- <label for="enOption">
                     <img src="Icons/en.png">
                 </label> -->
-                <option data-img-src="Icons/en.png" value="en" id="enOption">EN
-                </option>
-                <option data-img-src="Icons/en.png" value="ua" id="enOption">UA
-                </option>
-                <option data-img-src="Icons/en.png" value="ru" id="enOption">RU
-                </option>
-            </select>
-        </div>
-    </nav>
-
+                    <option data-img-src="Icons/en.png" value="en" id="enOption">EN
+                    </option>
+                    <option data-img-src="Icons/en.png" value="ua" id="enOption">UA
+                    </option>
+                    <option data-img-src="Icons/en.png" value="ru" id="enOption">RU
+                    </option>
+                </select>
+            </div>
+        </nav>
+        <ul class="addProperties">
+            <a>Adjustment properties<i class="arrow">   &#9660;</i></a>
+            <li>
+                <div class="page">
+                    <a>Skill points added at click</a><input type="number" value="1" id="skillPoints_PerUp">
+                    <a>Skill points removed at click</a><input type="number" value="1" id="skillPoints_PerDown">
+                    <a></a><button id="propSubmit">Submit </button>
+                </div>
+            </li>
+        </ul>
+    </div>
 
 
 
@@ -94,9 +105,9 @@
             </div>
             <div class="List">
                 <div class="Choose_list">
-                        <div class="header">
-                            <h1>Доступные</h1>
-                        </div>
+                    <div class="header">
+                        <h1>Доступные</h1>
+                    </div>
                     <div class="head">
                         <h2>^</h2>
                         <h2>Название</h2>
@@ -247,27 +258,28 @@
                         <h4>1</h4>
                         <div id="Strength" class="unChecked implant"><i></i></div> -->
                 </div>
-            <div class="added">
-                <div class="head">
-                    <h1>Добавленые</h1>
-                    <h2>Название</h2>
-                    <h2>Ур.</h2>
-                    <h2>Спос. Пол.</h2>
-                    <h2>Ранг.</h2>
+                <div class="added">
+                    <div class="head">
+                        <h1>Добавленые</h1>
+                        <h2>Название</h2>
+                        <h2>Ур.</h2>
+                        <h2>Спос. Пол.</h2>
+                        <h2>Ранг.</h2>
+                    </div>
+                    <!-- <div id="" class="main unChecked"><a>HK</a></div> -->
                 </div>
-                <!-- <div id="" class="main unChecked"><a>HK</a></div> -->
-            </div>
             </div>
         </div>
     </div>
     </div>
 
-    <script src="Classes.js"></script>
-    <script src="Special.js"></script>
-    <script src="Skills.js"></script>
-    <script src="Abilities.js"></script>
-    <script src="Traits.js"></script>
-    <script src="Derived.js"></script>
-    <script src="Scripts.js"></script>
-    <script src="Triggers.js"></script>
+    <script src="JS/Classes.js"></script>
+    <script src="JS/Special.js"></script>
+    <script src="JS/Skills.js"></script>
+    <script src="JS/Abilities.js"></script>
+    <script src="JS/Traits.js"></script>
+    <script src="JS/Derived.js"></script>
+    <script src="JS/Building.js"></script>
+    <script src="JS/Scripts.js"></script>
+    <script src="JS/Triggers.js"></script>
 </body>
