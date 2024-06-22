@@ -1,6 +1,7 @@
 * {
     margin: 0px;
     /* font-family: 'Roboto Flex', sans-serif; */
+    font-size: 16px;
 }
 
 body {
@@ -102,12 +103,12 @@ nav {
     }
 
     li {
-        display: flex;
+        display: none;
     }
 }
 
 .addProperties:hover li {
-    display: block;
+    display: flex;
 }
 
 .page {
@@ -120,7 +121,7 @@ nav {
 
     input {
         font-size: 0.85rem;
-        width: 1.25rem;
+        width: 1.4rem;
         padding-right: 10px;
         justify-self: end;
         font-family: "Gill Sans", sans-serif;
@@ -496,7 +497,7 @@ img {
     width: 25.05rem;
     /*    grid-template-rows: 30px 78px;*/
     max-height: fit-content;
-    border-width: 3px 3px 3px 1px;
+    border-width: 2px 3px 3px 1px;
     overflow: hidden;
 }
 
