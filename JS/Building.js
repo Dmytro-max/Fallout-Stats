@@ -722,6 +722,7 @@ function SpecialBlockCreate(char) {
         up.addEventListener('click', () => {
             let name = up.name;
             Special_up(char, name);
+            SpecialUpDownCheck(char);
             FNV(char);
         });
 
@@ -732,6 +733,7 @@ function SpecialBlockCreate(char) {
         down.addEventListener('click', () => {
             let name = down.name;
             Special_down(char, name);
+            SpecialUpDownCheck(char);
             FNV(char)
         });
 

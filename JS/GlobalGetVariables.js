@@ -23,3 +23,7 @@ let Added = document.querySelector('#Special_Abilities .added');
 
 let ImplantsAvailible = document.querySelector('#Implants_Abilities .Choose_list');
 let ImplantsAdded = document.querySelector('#Implants_Abilities .added');
+
+
+
+const _skillUpStep = 5

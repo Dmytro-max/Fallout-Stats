@@ -15,6 +15,17 @@ document.querySelector("#propSubmit").addEventListener('click', () => (char.skil
 document.querySelector("#propSubmit").addEventListener('click', () => (char.skillPoints_perDown = skillPoints_RemoveInput.valueAsNumber))
 
 
+// let levelSelect = document.querySelector('#ImplantlevelChoose')
+let CharlevelChoose = document.querySelector('#CharlevelChoose')
+
+CharlevelChoose.addEventListener('change', () => (LevelJump(char), FNV(char)))
+
+let CharLevelup = document.querySelector('#CharLevelup.next')
+let CharLeveldown = document.querySelector('#CharLeveldown.previous')
+
+CharLevelup.addEventListener('click', () => (LevelUp(char), FNV(char)))
+CharLeveldown.addEventListener('click', () => (LevelDown(char), FNV(char)))
+
 
 //create
 const fnv = document.querySelector(".FNV")
@@ -34,7 +45,7 @@ fnv.addEventListener("click", () => (
 
 
 
-
+let skillsNames
 function prep () {
     char = new FNVChar(SPECIAL, SPECIAL_Ru, FNV_Abilities, FNV_Abilities_Ru, skills, skills_Ru, Traits, Traits_Ru, Derived, Derived_Ru)
     SpecialBlockCreate(char)
@@ -47,54 +58,107 @@ function prep () {
     Ability_AveilabilityCheck(char);
     console.timeEnd('Abilitie test');
 
+    skillsNames = Object.keys(char.skills)
+
     while (char.Special_BonusPoints > 0) {
         Special_up(char, 'Agility');
     }
-    Choose_prize(char, 'Barter', document.querySelector('.main#Barter'))
-    Choose_prize(char, 'M_W', document.querySelector('.main#M_W'))
-    Choose_prize(char, 'E_W', document.querySelector('.main#E_W'))
+
+    for (let name_index = 0; name_index < skillsNames.length && char.prizeSkillsAveilible > 0; name_index++) {
+        let skill = skillsNames[name_index];
+        Choose_prize(char, skill, char.skillBlocks.get(skill).block);
+    }
 
     LevelUp(char);
     FNV(char)
 
+
     // JSON.stringify(Array.from(char.PrizeSkills))
 }
 // prep()
-//arr = [];
 let skill = 'Barter';
-//to finish
+//to finish character
 function toMaxLevel () {
-    while (char.level < char.max_level) {
-        let keys = char.Main_Abilities.keys()
-        let abilities = new Array(25)
-        let amount = 0
-        for (let set of keys <= char.level && amount >= 24) {
-            if (char.Main_Abilities[set].type == 'levelup' && char.Main_Abilities[set].RequirementsCheck?.(char) == undefined) {
-                abilities[amount] = char.Main_Abilities[set];
-                amount += 1;
-            }
-        }
-        amount = 0
+    prep()
+    if (char.level == 1) {
+        return;
+        // prep();
+        
+    }
 
-        while (char.skillsByLevel[char.level - 1]['spent'] < Math.floor(char.SkillPointsCount(char))) {
-            if (char.skills[skill].value(char) == 100) {
-                for (let key in char.skills) {
-                    if (char.skills[key].value(char) < 100) {
-                        skill = key;
-                    }
+    while (char.Special_BonusPoints > 0) {
+        Special_up(char, 'Agility');
+    }
+
+    //Clearing list of abilities to be added from those that contain custom window with aditional actions like Intense Training
+    LevelAbilities = Object.keys(char.Main_Abilities)
+    .filter(key => char.Main_Abilities[key].type == 'levelup' && char.Main_Abilities[key]?.Increased == undefined)
+    // .sort((abilitie_a, abilitie_b) => char.Main_Abilities[abilitie_a].RequirementsCheck?.(char) == (undefined || true) ? -1 : 1 )
+    .sort((a, b) => {
+        let abilitie_a = char.Main_Abilities[a];
+        let abilitie_b = char.Main_Abilities[b];
+        if (abilitie_a.RequirementsCheck?.(char) == (undefined || true) && 
+                abilitie_b.RequirementsCheck?.(char) == (undefined || true)) {
+            abilitie_a.level >= abilitie_b.level ? -1 : 1;              
+        } 
+        else if (abilitie_a.RequirementsCheck?.(char) == (undefined || true) && 
+                    abilitie_b.RequirementsCheck?.(char) != (undefined || true)){
+                return -1;
                 }
+        else if (abilitie_a.RequirementsCheck?.(char) != (undefined || true) && 
+                    abilitie_b.RequirementsCheck?.(char) == (undefined || true)){
+                return 1;
+                }
+    })
+    // .sort((abilitie_a, abilitie_b) => { 
+    //     if (abilitie_a.level == abilitie_b.level){
+    //         return ((abilitie_a, abilitie_b) => 
+    //             abilitie_a.RequirementsCheck?.(char) == (undefined || true) ? -1 : 1);
+    //     }
+    //     // if (abilitie_a.level < abilitie_b.level){
+    //     //     return -1;
+    //     // }
+    //     // else if (abilitie_a.level > abilitie_b.level){
+    //     //     return 1;
+    //     // }
+    // });
+
+    let abilityGen = NextLevelAbility()
+    let skillGen = NextSkill()
+    let skill = skillGen.next().value;
+
+
+    while (char.level < char.max_level) {
+        debugger
+        FNV(char)
+        if (char.IsPerkLevel()) {
+            Ability_Add(char, abilityGen.next().value)
+        }
+
+        while (char.skillsByLevel[char.level - 1]['spent'] < char.skillsByLevel[char.level - 1]['points']) {
+            if (char.skills[skill].value(char) == char.maxSkillValue) {
+                skill = skillGen.next().value;
             }
             Skill_up(skill, char);
         }
-        if (char.IsPerkLevel()) {
-            Ability_Add(char, abilities[amount])
-            amount += 1
-        }
+
         LevelUp(char);
     }
+    function* NextSkill () {
+        for (let skill of skillsNames) {
+            yield skill;
+        }
+    }
+
+    function* NextLevelAbility () {
+        for (let ability of LevelAbilities) {
+            yield ability;
+        }
+    }
+
 }
 
-// FNV(char)
+toMaxLevel()
 
-//toMaxLevel()
+// FNV(char)
 

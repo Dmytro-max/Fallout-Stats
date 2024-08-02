@@ -3,7 +3,6 @@ class FNVChar {
   constructor(Special, Special_Lan, Abilities, Abilities_Lan, Skills, Skills_Lan, Traits, Traits_Lan, Derived, Derived_Lan) {
     // document.body.style.backgroundImage = "url('Backgrounds/New Vegas.webp')";
 
-    this.skillsByLevel = new Array(50);
 
     //filling character paraameters with merged parameter core and text of neaded language
     this.SPECIAL = {}
@@ -29,6 +28,7 @@ class FNVChar {
       this.derived[key] = Object.assign({}, ...[Derived[key], Derived_Lan[key]]);
     }
 
+    this.skillsByLevel = new Array(50);
     for (let item = 0; item < this.skillsByLevel.length; item++) {
       this.skillsByLevel[item] = {
         spent: 0,
@@ -63,13 +63,14 @@ class FNVChar {
   skillbook_bonus = 3
   skillPoints_perUp = 1
   skillPoints_perDown = 1
- // rest_point = 0
+  rest_point = 0
 
   level = 1
   max_level = 50
   level_reached = 1
   baseSpecial = 1
-  skillValueMax = 100
+  maxSpecialValue = 10//при взятті пупса при значенні 10 параметр не стане 11, але якщо понизити тимчасово показник, його дія стане помітною  
+  maxSkillValue = 100
 
   skill_pointsBonus = 0
   levelsForPerk = 2
@@ -105,10 +106,10 @@ class FNVChar {
   SkillPointsCount() {
     return (((char.SPECIAL['Intelligence'].value) / 2) + 10 + this.skill_pointsBonus);
   }
-  // SkillPointsCountMax(char){
-  //     return Math.floor(char.inup_level * (10 + (char.SPECIAL['Intelligence'].value - 1) / 2) + 
-  //     (10 + (char.SPECIAL['Intelligence'].value) / 2) * (char.max_level - 1 - char.inup_level) + char.rest_point);
-  //   }
+  SkillPointsCountMax(char){
+      return Math.floor(char.inup_level * (10 + (char.SPECIAL['Intelligence'].value - 1) / 2) + 
+      (10 + (char.SPECIAL['Intelligence'].value) / 2) * (char.max_level - 1 - char.inup_level) + char.rest_point);
+    }
 
   Abilities_Availible = new Map();
   Abilities_Added = new Map();

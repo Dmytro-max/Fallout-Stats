@@ -4,6 +4,7 @@ function ElemDescription (Desc, elem) {
 }
 //elem - dom element 
 function Choose_prize (char, name, elem) {
+    // elem = char.skillBlocks.get(name).block;
     if (char.level == 1) {
         if (elem.classList.contains("unChecked") && 100 - char.skills[name].value(char) >= 15) {
             if (char.prizeSkillsAveilible > 0) {
@@ -28,22 +29,27 @@ function Choose_prize (char, name, elem) {
     }
 }
 function Skill_up (name, char) {
+    
     let skill_points = char.skillsByLevel[char.level - 1]['points'];
     let spent = char.skillsByLevel[char.level - 1]['spent'];
     let skillvalue = char.skillsByLevel[char.level - 1][name];
 
-    let step = 1
+    let step = _skillUpStep;
     //if our defined step smaller or equal to the points left 
-    char.skillPoints_perUp <= (skill_points - spent) ? step = char.skillPoints_perUp : step = 1;
+    // char.skillPoints_perUp <= (skill_points - spent) ? step = char.skillPoints_perUp : step = 1;
+
+    //if NOT our defined step smaller or equal to the points left, - we set step to the points left
+    step = (char.skillPoints_perUp <= (skill_points - spent)) ? char.skillPoints_perUp : (skill_points - spent);
 
 
-    if (skillvalue + step <= 100 && skill_points > spent) {
+    if (skill_points > spent){
+        step = (skillvalue + step <= char.maxSkillValue) ? step : (char.maxSkillValue - skillvalue);
+    }
         char.skills[name].bonus += step;
         char.skillsByLevel[char.level - 1]['spent'] += step;
         char.skillsByLevel[char.level - 1][name] += step;
 
         SkillsUpDownCheck(char)
-    }
     // return char.skills[name].bonus;
 }
 function Skill_down (name, char) {
@@ -65,16 +71,12 @@ function Special_up (char, name) {
     if (char.Special_BonusPoints >= 1 && char.SPECIAL[name].value < 10) {
         char.SPECIAL[name].value += 1
         char.Special_BonusPoints -= 1
-
-        SpecialUpDownCheck(char)
     }
 }
 function Special_down (char, name) {
     if (char.SPECIAL[name].value > char.baseSpecial) {
         char.SPECIAL[name].value -= 1
         char.Special_BonusPoints += 1
-
-        SpecialUpDownCheck(char)
     }
 }
 
@@ -178,7 +180,14 @@ function AbilityInfoFill () {
 }
 
 function Ability_Add (char, name) {
-    if (!char.Abilities_Availible.get(name).classList.contains('unAvailible')) {
+    //debugger
+    let cond
+    try {
+        cond = !char.Abilities_Availible.get(name).classList.contains('unAvailible')
+    } catch (error) {
+        debugger
+    }
+    if (cond) {
         let perk = char.Main_Abilities[name];
         switch (perk.type) {
             case 'levelup':
@@ -187,6 +196,7 @@ function Ability_Add (char, name) {
                 perk.Add?.(char);
                 perk.rang += 1;
                 perk.level_taken = char.level;
+                char.level_reached = char.level;
                 break;
         }
         //adding new object with Sets of abilities different kinds added on this level
@@ -263,19 +273,9 @@ function Ability_Remove (char, name) {
     }
 }
 
-// let levelSelect = document.querySelector('#ImplantlevelChoose')
-let CharlevelChoose = document.querySelector('#CharlevelChoose')
-
-CharlevelChoose.addEventListener('change', () => (LevelJump(char), FNV(char)))
-
-let CharLevelup = document.querySelector('#CharLevelup.next')
-let CharLeveldown = document.querySelector('#CharLeveldown.previous')
-
-
-CharLevelup.addEventListener('click', () => (LevelUp(char), FNV(char)))
-CharLeveldown.addEventListener('click', () => (LevelDown(char), FNV(char)))
 
 function LevelUp (char) {
+    debugger
     let spent = char.skillsByLevel[char.level - 1]['spent'];
     let level_reached = char.level_reached;
     console.log('Reached: ' + char.level_reached)
@@ -286,12 +286,13 @@ function LevelUp (char) {
         RestoringLevel()
     }
 
-    else if (level_reached == 1 && char.Special_BonusPoints == 0 && char.prizeSkillsAveilible == 0) {
+    else if (level_reached == 1 && (char.Special_BonusPoints == 0 && char.prizeSkillsAveilible == 0)) {
         ToSecondLevel()
     }
 
-    //No skillpoints left, all Prize Skills chosen, all Special Points spent, it is not level where perk is recieved or Perk is chosen
-    else if (spent == skill_points && char.prizeSkillsAveilible == 0 && char.Special_BonusPoints == 0 && (!char.IsPerkLevel() ||
+    // No skillpoints left, all Prize Skills chosen, all Special Points spent, it is not level where perk is recieved
+    // and has to be chosen or Perk is chosen
+    else if ((spent == skill_points && char.prizeSkillsAveilible == 0 && char.Special_BonusPoints == 0) && (!char.IsPerkLevel() ||
         (char.IsPerkLevel() && char.PerksbyLevel.has(char.level) ? char.PerksbyLevel.get(char.level)['levelup'] : false))) {
         NewLevel()
     }
@@ -313,20 +314,12 @@ function LevelUp (char) {
         char.level += 1;
         char.level_reached += 1;
 
-        for (let block of char.SpecialBlocks.ups.values()) {
-            block.disabled = true;
-        }
-        for (let block of char.SpecialBlocks.downs.values()) {
-            block.disabled = true;
-        }
-
-        SpecialUpDownCheck(char)
-
         char.skillsByLevel[char.level - 1]['points'] = Math.floor(char.SkillPointsCount());
         char.rest_point += char.SkillPointsCount() - Math.floor(char.SkillPointsCount());
-        if (char.rest_point == 1) {//!!
-            char.rest_point = 0;
-            char.skillsByLevel[char.level - 1]['points'] += 1;
+
+        if (char.rest_point > 1) {//!! Counted skillpoints number can be float, so Integer part must be used already and floating part should be accumulated through different levels
+            char.skillsByLevel[char.level - 1]['points'] += Math.floor(char.rest_point);
+            char.rest_point -= Math.floor(char.rest_point);
         }
     }
 
@@ -459,6 +452,7 @@ function LevelJump (char) {
     }
 }
 
+
 function FNV (char) {
     for (let key in char.SPECIAL) {
         char.SpecialBlocks['values'].get(key).textContent = char.SPECIAL[key].value
@@ -489,4 +483,49 @@ function FNV (char) {
 
     InsertAbilities(char);
     Ability_AveilabilityCheck(char);
+    SpecialUpDownCheck(char)
+    SkillsUpDownCheck(char)
+}
+
+
+
+const DEF_SPECIAL_VALUE = 5
+const MAX_SPECIAL_VALUE = 10
+const MIN_SPECIAL_VALUE = 1
+function SpecialUpDownCheck (char) {
+    for (key in char.SPECIAL) {
+        if (char.level > 1) {
+            char.SpecialBlocks.downs.get(key).disabled = true;
+            char.SpecialBlocks.ups.get(key).disabled = true;
+        }
+        else {
+            if (char.SPECIAL[key].baseSpecial == 1) {
+                char.SpecialBlocks.downs.get(key).disabled = true;
+            }
+            else {
+                char.SpecialBlocks.downs.get(key).disabled = false;
+            }
+            if (char.SPECIAL[key].value == char.maxSpecialValue || char.Special_BonusPoints == 0) {
+                char.SpecialBlocks.ups.get(key).disabled = true;
+            }
+            else {
+                char.SpecialBlocks.ups.get(key).disabled = false;
+            }
+        }
+    }
+}
+function SkillsUpDownCheck (char) {
+    let skill_points = char.skillsByLevel[char.level - 1];
+    for (let item of char.skillBlocks.values()) {
+        if (char.level == 1) {
+            item.up.disabled = true;
+            item.down.disabled = true;
+        }
+        else {
+        item.up.disabled = skill_points['spent'] == skill_points['points'] ? true : false;
+
+        item.down.disabled = (!char.skillsByLevel[char.level - 1][item.name] > 0 ? true : false)
+
+        }
+    }
 }
