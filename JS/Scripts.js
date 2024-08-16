@@ -3,28 +3,39 @@ function ElemDescription (Desc, elem) {
     Desc.querySelector("#Text").textContent = elem.Description
 }
 //elem - dom element 
-function Choose_prize (char, name, elem) {
-    // elem = char.skillBlocks.get(name).block;
+function Choose_PrizeSkill (char, name) {
+    let prizeBonus = char.prizeSkillBonus;
+    elem = char.skillBlocks.get(name).block;
+
     if (char.level == 1) {
-        if (elem.classList.contains("unChecked") && 100 - char.skills[name].value(char) >= 15) {
+        if (!char.PrizeSkills.has(name) && (100 - char.skills[name].value(char)) >= prizeBonus) {
             if (char.prizeSkillsAveilible > 0) {
-                elem.classList.replace("unChecked", "Checked");
                 char.prizeSkillsAveilible -= 1;
-                char.need_sp -= 15;
-                char.skills[name].bonus += 15;
-                char.skillsByLevel[char.level - 1][name] += 15;
+                char.skills[name].bonus += prizeBonus;
+                char.skillsByLevel[char.level - 1][name] += prizeBonus;
                 char.PrizeSkills.add(name);
             }
         }
         else {
-            if (char.skills[name].bonus - 15 >= 0) {
-                elem.classList.replace("Checked", "unChecked");
+            if (char.skills[name].bonus - prizeBonus >= 0) {
                 char.prizeSkillsAveilible += 1;
-                char.need_sp += 15;
-                char.skills[name].bonus -= 15;
-                char.skillsByLevel[char.level - 1][name] -= 15;
+                char.skills[name].bonus -= prizeBonus;
+                char.skillsByLevel[char.level - 1][name] -= prizeBonus;
                 char.PrizeSkills.delete(name);
             }
+        }
+    }
+    update_ChoosenPrizeSkills (char);//To remove!
+}
+function update_ChoosenPrizeSkills (char){
+    
+    keys = (char.skillBlocks.keys())
+    for (key of keys) {
+        if (char.PrizeSkills.has(key)) {
+            char.skillBlocks.get(key).block.classList.replace("unChecked", "Checked");
+        }
+        else {
+            char.skillBlocks.get(key).block.classList.replace("Checked", "unChecked");
         }
     }
 }
@@ -181,13 +192,13 @@ function AbilityInfoFill () {
 
 function Ability_Add (char, name) {
     //debugger
-    let cond
+    let condition
     try {
-        cond = !char.Abilities_Availible.get(name).classList.contains('unAvailible')
+        condition = !char.Abilities_Availible.get(name).classList.contains('unAvailible')
     } catch (error) {
         debugger
     }
-    if (cond) {
+    if (condition) {
         let perk = char.Main_Abilities[name];
         switch (perk.type) {
             case 'levelup':
@@ -275,7 +286,6 @@ function Ability_Remove (char, name) {
 
 
 function LevelUp (char) {
-    debugger
     let spent = char.skillsByLevel[char.level - 1]['spent'];
     let level_reached = char.level_reached;
     console.log('Reached: ' + char.level_reached)
@@ -357,7 +367,6 @@ function LevelUp (char) {
 
     function NewLevel () {
         for (let key in char.skills) {
-
             char.skillBookBlocks.get(key)['select'].insertAdjacentHTML('beforeend', `<option value="${char.level + 1}">${char.level + 1}</option>`);
             char.skillBookBlocks.get(key)['select'].selectedIndex = CharlevelChoose.selectedIndex;
         }
@@ -373,10 +382,7 @@ function LevelUp (char) {
             char.skillsByLevel[char.level - 1]['points'] += 1;
         }
 
-        for (let item of char.skillBlocks.values()) {
-            item.up.disabled = false;
-            item.down.disabled = true;
-        }
+        SkillsUpDownCheck(char)
 
         CharlevelChoose.insertAdjacentHTML('beforeend', `<option value="${level_reached + 1}">${level_reached + 1}</option>`);
         CharlevelChoose.selectedIndex += 1;
@@ -459,7 +465,7 @@ function FNV (char) {
     }
 
     special.textContent = `SPECIAL ${char.Special_BonusPoints}`
-    char.skillscount()
+   // char.skillscount()
     char.total = Math.floor(char.inup_level * (10 + (char.SPECIAL['Intelligence'].value - 1) / 2) +
         (10 + (char.SPECIAL['Intelligence'].value) / 2) * (char.max_level - 1 - char.inup_level))
 
@@ -474,8 +480,10 @@ function FNV (char) {
     bonus.textContent = `Skills ${char.prizeSkillsAveilible}/3`
     // max.textContent = `Skill points on the ${char.max_level}:` + (char.total);
     max.textContent = `Skill points aveilible ${Math.floor(skill_points) - spent}`;
-    need.textContent = `Needed: ${char.need_sp}`
+    need.textContent = `Needed: ${char.neededSkillsCount()}`
     // CharlevelChoose.textContent = `Уровень Героя ${char.level}`
+
+
 
     for (let key in char.derived) {
         char.derivedBlocks.get(key).textContent = char.derived[key].value(char);

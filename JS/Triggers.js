@@ -46,7 +46,7 @@ fnv.addEventListener("click", () => (
 
 
 let skillsNames
-function prep () {
+function FormPreparationtoUse () {
     char = new FNVChar(SPECIAL, SPECIAL_Ru, FNV_Abilities, FNV_Abilities_Ru, skills, skills_Ru, Traits, Traits_Ru, Derived, Derived_Ru)
     SpecialBlockCreate(char)
     SkillsBuild(char)
@@ -66,24 +66,25 @@ function prep () {
 
     for (let name_index = 0; name_index < skillsNames.length && char.prizeSkillsAveilible > 0; name_index++) {
         let skill = skillsNames[name_index];
-        Choose_prize(char, skill, char.skillBlocks.get(skill).block);
+        Choose_PrizeSkill(char, skill, char.skillBlocks.get(skill).block);
     }
+    update_ChoosenPrizeSkills(char)
 
-    LevelUp(char);
+    // LevelUp(char);
     FNV(char)
 
 
     // JSON.stringify(Array.from(char.PrizeSkills))
 }
-// prep()
-let skill = 'Barter';
+function firstToSecondLevel() {
+
+}
+
+//toSecondLevel
 //to finish character
 function toMaxLevel () {
-    prep()
     if (char.level == 1) {
-        return;
-        // prep();
-        
+        return;        
     }
 
     while (char.Special_BonusPoints > 0) {
@@ -110,18 +111,6 @@ function toMaxLevel () {
                 return 1;
                 }
     })
-    // .sort((abilitie_a, abilitie_b) => { 
-    //     if (abilitie_a.level == abilitie_b.level){
-    //         return ((abilitie_a, abilitie_b) => 
-    //             abilitie_a.RequirementsCheck?.(char) == (undefined || true) ? -1 : 1);
-    //     }
-    //     // if (abilitie_a.level < abilitie_b.level){
-    //     //     return -1;
-    //     // }
-    //     // else if (abilitie_a.level > abilitie_b.level){
-    //     //     return 1;
-    //     // }
-    // });
 
     let abilityGen = NextLevelAbility()
     let skillGen = NextSkill()
@@ -129,7 +118,6 @@ function toMaxLevel () {
 
 
     while (char.level < char.max_level) {
-        debugger
         FNV(char)
         if (char.IsPerkLevel()) {
             Ability_Add(char, abilityGen.next().value)
@@ -158,7 +146,8 @@ function toMaxLevel () {
 
 }
 
-toMaxLevel()
+FormPreparationtoUse()
+// toMaxLevel()
 
 // FNV(char)
 

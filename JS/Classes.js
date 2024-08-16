@@ -71,6 +71,7 @@ class FNVChar {
   baseSpecial = 1
   maxSpecialValue = 10//при взятті пупса при значенні 10 параметр не стане 11, але якщо понизити тимчасово показник, його дія стане помітною  
   maxSkillValue = 100
+  prizeSkillBonus = 15
 
   skill_pointsBonus = 0
   levelsForPerk = 2
@@ -97,10 +98,13 @@ class FNVChar {
 
   derivedBlocks = new Map();
 
-  skillscount() {
-    this.need_sp = 1300
-    for (let skill in this.skills) {
-      this.need_sp -= this.skills[skill].value(this);
+  neededSkillsCount() {
+    let need_sp = (Object.keys(char.skills)).length * char.maxSkillValue;
+    // debugger
+    for (let skill in char.skills) {
+      console.log(char.level-1 )
+      console.log(char.skillsByLevel[char.level-1][skill] )
+        need_sp -= char.skillsByLevel[char.level-1][skill] 
     }
   }
   SkillPointsCount() {

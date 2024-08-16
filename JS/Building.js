@@ -257,8 +257,8 @@ function SkillsBuild(char) {
 
             let skill = char.skills[key];
             let maindiv = SkillMainCreate(skillObject, skill);
-            maindiv.addEventListener('click', () => (Choose_prize(char, maindiv.id, maindiv),
-                FNV(char), ElemDescription(Desc, char.skills[maindiv.id])))
+            maindiv.addEventListener('click', () => (Choose_PrizeSkill(char, maindiv.id, maindiv), 
+                update_ChoosenPrizeSkills(char), FNV(char), ElemDescription(Desc, char.skills[maindiv.id])))
 
             fulldiv.append(maindiv);
 

@@ -4,7 +4,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 6 && char.skills['Sneak'].value(char) >= 30);
     },
     type: 'levelup',
@@ -28,41 +28,34 @@ FNV_Abilities = {
       "Luck": 5,
     },
     SpecialWindow: {},
-    Add(char) {
+    Add (char) {
       let raised = this.Increased[this.rang]
       char.SPECIAL[raised].value = this.SPECIAL[raised]
       this.points = this.spent;
       this.spent = 0;
     },
-    Remove() {
+    Remove () {
       let raised = this.Increased[this.rang - 1]
       char.SPECIAL[raised].value -= 1
       this.Increased.pop();
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.SPECIAL) {
         this.SPECIAL[key] = char.SPECIAL[key].value;
         this.SpecialWindow['values'].get(key).textContent = this.SPECIAL[key]
-        if (this.SPECIAL[key] == 10) {
+        if ((this.type == 'levelup' && !char.IsPerkLevel() || this.RequirementsCheck?.(char) == false) || this.SPECIAL[key] == (10 || char.baseSpecial)) {
           this.SpecialWindow['ups'].get(key).disabled = true;
         }
         else {
           this.SpecialWindow['ups'].get(key).disabled = false;
         }
-
-        if (this.SPECIAL[key] > char.baseSpecial) {
-          this.SpecialWindow['downs'].get(key).disabled = false;
-        }
-        else {
-          this.SpecialWindow['downs'].get(key).disabled = true;
-        }
       }
       this.SpecialWindow['article'].textContent = `SPECIAL ${this.points}`;
     },
-    description() {
+    description () {
       return this.Description;
     },
-    *RangsAdded() {
+    *RangsAdded () {
       let rangs = '';
       for (let i = 0; i < this.rang; i++) {
         yield this.Increased[i];
@@ -75,7 +68,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 6 && char.skills.Repair.value(char) >= 45);
     },
     type: 'levelup',
@@ -85,7 +78,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Luck.value >= 6 && char.skills.Repair.value(char) >= 45);
     },
     type: 'levelup',
@@ -95,7 +88,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 30);
     },
     type: 'levelup',
@@ -105,7 +98,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 3,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 4);
     },
     type: 'levelup',
@@ -115,7 +108,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 6 && char.skills.Survival.value(char) >= 45);
     },
     type: 'levelup',
@@ -125,7 +118,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 5 && char.skills.Explosives.value(char) >= 30);
     },
     type: 'levelup',
@@ -135,7 +128,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Repair.value(char) >= 20 && char.skills.Science.value(char) >= 70);
     },
     type: 'levelup',
@@ -145,7 +138,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 5);
     },
     type: 'levelup',
@@ -169,7 +162,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.E_W.value(char) >= 45 && char.skills.Guns.value(char) >= 45);
     },
     type: 'levelup',
@@ -179,7 +172,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 70);
     },
     type: 'levelup',
@@ -197,13 +190,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 4);
     },
-    Add(char) {
+    Add (char) {
       char.skill_pointsBonus += 2;
     },
-    Remove() {
+    Remove () {
       char.skill_pointsBonus -= 2;
     },
     type: 'levelup',
@@ -213,14 +206,14 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 4);
     },
-    Add(char) {
+    Add (char) {
       char.skillbook_bonus = 4;
       char.skillsByLevel[char.level - 1]['skillbook_bonus'] = 4;
     },
-    Remove() {
+    Remove () {
       char.skillbook_bonus = 3;
       char.skillsByLevel[char.level - 1]['skillbook_bonus'] = 3;
     },
@@ -231,7 +224,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 45);
     },
     type: 'levelup',
@@ -241,7 +234,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 6 && char.skills.Survival.value(char) >= 45);
     },
     type: 'levelup',
@@ -251,7 +244,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Charisma.value >= 6);
     },
     type: 'levelup',
@@ -261,7 +254,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Repair.value(char) >= 45 && char.skills.Explosives.value(char) >= 45);
     },
     type: 'levelup',
@@ -271,7 +264,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Guns.value(char) >= 45);
     },
     type: 'levelup',
@@ -289,7 +282,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Luck.value >= 5);
     },
     type: 'levelup',
@@ -307,7 +300,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Sneak.value(char) >= 70);
     },
     type: 'levelup',
@@ -317,7 +310,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Science.value(char) >= 70);
     },
     type: 'levelup',
@@ -327,7 +320,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Repair.value(char) >= 70);
     },
     type: 'levelup',
@@ -337,7 +330,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 5 || char.skills.Survival.value(char) >= 40);
     },
     type: 'levelup',
@@ -347,13 +340,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 2,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 5);
     },
-    Add(char) {
+    Add (char) {
       char.derived['dt'].base += 3;
     },
-    Remove() {
+    Remove () {
       char.derived['dt'].base -= 3;
     },
     type: 'levelup',
@@ -363,7 +356,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 3,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return ((char.skills.Explosives.value(char) >= 50));
     },
     type: 'levelup',
@@ -373,7 +366,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 5 && char.skills.Barter.value(char) >= 70);
     },
     type: 'levelup',
@@ -383,7 +376,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 5);
     },
     type: 'levelup',
@@ -393,7 +386,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 70);
     },
     type: 'levelup',
@@ -411,7 +404,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 6 && char.SPECIAL.Endurance.value >= 6);
     },
     type: 'levelup',
@@ -421,7 +414,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Guns.value(char) >= 45 && char.skills.M_W.value(char) >= 45);
     },
     type: 'levelup',
@@ -439,13 +432,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 5 && char.SPECIAL.Endurance.value >= 5);
     },
-    Add(char) {
+    Add (char) {
       char.derived['mw'].base += 50;
     },
-    Remove() {
+    Remove () {
       char.derived['mw'].base -= 50;
     },
     type: 'levelup',
@@ -455,13 +448,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 70);
     },
-    Add(char) {
+    Add (char) {
       char.derived['pr'].base += 25;
     },
-    Remove() {
+    Remove () {
       char.derived['pr'].base -= 25;
     },
     type: 'levelup',
@@ -471,7 +464,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Guns.value(char) >= 45 && char.skills.Explosives.value(char) >= 20);
     },
     type: 'levelup',
@@ -481,7 +474,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Medicine.value(char) >= 70);
     },
     type: 'levelup',
@@ -491,13 +484,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 5 && char.skills.Survival.value(char) >= 40);
     },
-    Add(char) {
+    Add (char) {
       char.derived['rr'].base += 25;
     },
-    Remove() {
+    Remove () {
       char.derived['rr'].base -= 25;
     },
     type: 'levelup',
@@ -507,7 +500,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Speech.value(char) >= 70);
     },
     type: 'levelup',
@@ -517,7 +510,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 6 && char.skills.M_W.value(char) >= 45);
     },
     type: 'levelup',
@@ -527,7 +520,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Luck.value >= 5);
     },
     type: 'levelup',
@@ -545,7 +538,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 5 && char.skills.Science.value(char) >= 50);
     },
     type: 'levelup',
@@ -555,7 +548,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Guns.value(char) >= 70);
     },
     type: 'levelup',
@@ -565,7 +558,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 2,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Charisma.value >= 6 && char.skills.Survival.value(char) >= 45);
     },
     type: 'levelup',
@@ -583,7 +576,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Science.value(char) >= 70);
     },
     type: 'levelup',
@@ -593,7 +586,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Luck.value >= 6);
     },
     type: 'levelup',
@@ -611,7 +604,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Sneak.value(char) >= 60);
     },
     type: 'levelup',
@@ -621,7 +614,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.E_W.value(char) >= 70);
     },
     type: 'levelup',
@@ -631,7 +624,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Luck.value >= 6);
     },
     type: 'levelup',
@@ -643,10 +636,10 @@ FNV_Abilities = {
     rang: 0,
     requirements_text: '',
     type: 'levelup',
-    Add(char) {
+    Add (char) {
       char.derived['cs'].base += 5;
     },
-    Remove() {
+    Remove () {
       char.derived['cs'].base -= 5;
     },
   },
@@ -655,7 +648,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 6 && char.SPECIAL.Perception.value >= 9);
     },
     type: 'levelup',
@@ -665,7 +658,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 6 && char.skills.Sneak.value(char) >= 50);
     },
     type: 'levelup',
@@ -675,7 +668,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 6 && char.skills.Barter.value(char) >= 70);
     },
     type: 'levelup',
@@ -685,7 +678,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Explosives.value(char) >= 45);
     },
     type: 'levelup',
@@ -695,7 +688,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 7);
     },
     type: 'levelup',
@@ -705,7 +698,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Explosives.value(char) >= 70);
     },
     type: 'levelup',
@@ -715,7 +708,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 7 && char.skills.M_W.value(char) >= 90);
     },
     type: 'levelup',
@@ -725,7 +718,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Cannibal'].rang > 0);
     },
     type: 'levelup',
@@ -735,7 +728,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Explosives.value(char) >= 60);
     },
     type: 'levelup',
@@ -745,7 +738,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Unarmed.value(char) >= 70);
     },
     type: 'levelup',
@@ -755,7 +748,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Science.value(char) >= 50);
     },
     type: 'levelup',
@@ -765,7 +758,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 6 && char.SPECIAL.Perception.value >= 6);
     },
     type: 'levelup',
@@ -775,7 +768,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 7);
     },
     type: 'levelup',
@@ -793,13 +786,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    Add(char) {
+    Add (char) {
       char.derived['hp'].base += 25;
     },
-    Remove() {
+    Remove () {
       char.derived['hp'].base -= 25;
     },
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 6);
     },
     type: 'levelup',
@@ -825,7 +818,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 6 && char.SPECIAL.Agility.value >= 6);
     },
     type: 'levelup',
@@ -835,7 +828,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Repair.value(char) >= 90);
     },
     type: 'levelup',
@@ -845,7 +838,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Medicine.value(char) >= 60);
     },
     type: 'levelup',
@@ -855,7 +848,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Guns.value(char) >= 70);
     },
     type: 'levelup',
@@ -865,13 +858,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 2,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 6);
     },
-    Add(char) {
+    Add (char) {
       char.derived['ap'].base += 15;
     },
-    Remove() {
+    Remove () {
       char.derived['ap'].base -= 15;
     },
     type: 'levelup',
@@ -881,7 +874,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 6 && char.SPECIAL.Luck.value >= 6);
     },
     type: 'levelup',
@@ -891,7 +884,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value < 10);
     },
     type: 'levelup',
@@ -903,26 +896,26 @@ FNV_Abilities = {
     rang: 0,
     requirements_text: '',
     Skills: {},
-    Add(char) {
+    Add (char) {
       // char.prize_skillsNum += 1;
     },
-    Remove() {
+    Remove () {
       char.prize_skillsNum -= 1;
       char.PrizeSkills.pop();
     },
     Increased: '',
     points: 1,
     SkillWindow: {},
-    Add(char) {
+    Add (char) {
       char.skills[this.Increased].bonus += 15;
       char.skillBlocks.get(this.Increased)['block'].classList.replace("unChecked", "Checked");
     },
-    Remove() {
+    Remove () {
       char.skills[this.Increased].bonus -= 15;
       char.skillBlocks.get(this.Increased)['block'].classList.replace("Checked", "unChecked");
       this.points = 1;
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.skills) {
         this.SkillWindow['values'].get(key).textContent = char.skills[key].value(char);
       }
@@ -932,7 +925,7 @@ FNV_Abilities = {
       }
       this.SkillWindow['article'].textContent = `Skills ${this.points}`;
     },
-    description() {
+    description () {
       return this.Description;
     },
     type: 'levelup',
@@ -942,7 +935,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.E_W.value(char) >= 90);
     },
     type: 'levelup',
@@ -952,7 +945,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Medicine.value(char) >= 60);
     },
     type: 'levelup',
@@ -962,7 +955,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Perception.value >= 7 && char.skills.Lockpick.value(char) >= 70);
     },
     type: 'levelup',
@@ -972,7 +965,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 50);
     },
     type: 'levelup',
@@ -982,7 +975,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.E_W.value(char) >= 60 && char.skills.Guns.value(char) >= 60);
     },
     type: 'levelup',
@@ -992,7 +985,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Unarmed.value(char) >= 45);
     },
     type: 'levelup',
@@ -1002,7 +995,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 7 && char.skills.Science.value(char) >= 70);
     },
     type: 'levelup',
@@ -1012,7 +1005,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 6);
     },
     type: 'levelup',
@@ -1030,7 +1023,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.M_W.value(char) >= 80 && char.skills.Sneak.value(char) >= 80);
     },
     type: 'levelup',
@@ -1048,7 +1041,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 55);
     },
     type: 'levelup',
@@ -1058,7 +1051,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 25);
     },
     type: 'levelup',
@@ -1076,7 +1069,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 7);
     },
     type: 'levelup',
@@ -1094,7 +1087,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.E_W.value(char) >= 90);
     },
     type: 'levelup',
@@ -1104,7 +1097,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 7);
     },
     type: 'levelup',
@@ -1114,7 +1107,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 8);
     },
     type: 'levelup',
@@ -1124,7 +1117,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 90);
     },
     type: 'levelup',
@@ -1134,7 +1127,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 7 && char.skills.Unarmed.value(char) >= 90);
     },
     type: 'levelup',
@@ -1144,7 +1137,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Intelligence.value >= 6);
     },
     type: 'levelup',
@@ -1154,7 +1147,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 7);
     },
     type: 'levelup',
@@ -1164,7 +1157,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Agility.value >= 8);
     },
     type: 'levelup',
@@ -1174,7 +1167,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.skills.Survival.value(char) >= 100);
     },
     type: 'levelup',
@@ -1184,7 +1177,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 7);
     },
     type: 'levelup',
@@ -1194,13 +1187,13 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Strength.value >= 6 && char.SPECIAL.Endurance.value >= 6);
     },
-    Add(char) {
+    Add (char) {
       char.derived['mw'].base += 50;
     },
-    Remove() {
+    Remove () {
       char.derived['mw'].base -= 50;
     },
     type: 'levelup',
@@ -1210,7 +1203,7 @@ FNV_Abilities = {
     level_taken: null,
     rangs: 2,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.SPECIAL.Endurance.value >= 8);
     },
     type: 'levelup',
@@ -1267,13 +1260,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Strength'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Strength'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Strength'].value -= 1;
     },
     level_taken: null,
@@ -1283,13 +1276,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Perception'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Perception'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Perception'].value -= 1;
     },
     level_taken: null,
@@ -1299,13 +1292,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Endurance'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Endurance'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Endurance'].value -= 1;
     },
     level_taken: null,
@@ -1315,13 +1308,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Charisma'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Charisma'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Charisma'].value -= 1;
     },
     level_taken: null,
@@ -1331,15 +1324,15 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Intelligence'].value < 10;
     },
-    Add(char,...rest) {
+    Add (char, ...rest) {
       char.SPECIAL['Intelligence'].value += 1;
-      console.info('level:'+char.level)
+      console.info('level:' + char.level)
       console.info(rest)
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Intelligence'].value -= 1;
     },
     level_taken: null,
@@ -1349,13 +1342,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Agility'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Agility'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Agility'].value -= 1;
     },
   },
@@ -1364,13 +1357,13 @@ FNV_Abilities = {
     rang: 0,
     type: 'implant',
     level_taken: null,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return char.SPECIAL['Luck'].value < 10;
     },
-    Add(char) {
+    Add (char) {
       char.SPECIAL['Luck'].value += 1;
     },
-    Remove() {
+    Remove () {
       char.SPECIAL['Luck'].value -= 1;
     },
   },
@@ -1408,7 +1401,7 @@ FNV_Abilities = {
   'Elijah\'s Last Words': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Elijah\'s Ramblings'].rang == 0);
     },
     type: 'special',
@@ -1417,7 +1410,7 @@ FNV_Abilities = {
   'Elijah\'s Ramblings': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Elijah\'s Last Words'].rang == 0);
     },
     type: 'special',
@@ -1426,13 +1419,13 @@ FNV_Abilities = {
   'Brainless': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Big Brained'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['dr'].mod += 5;
     },
-    Remove() {
+    Remove () {
       char.derived['dr'].mod -= 5;
     },
     type: 'special',
@@ -1441,13 +1434,13 @@ FNV_Abilities = {
   'Heartless': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Cardiac Arrest'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['pr'].base += 100;
     },
-    Remove() {
+    Remove () {
       char.derived['pr'].base -= 100;
     },
     type: 'special',
@@ -1456,13 +1449,13 @@ FNV_Abilities = {
   'Spineless': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Reinforced Spine'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['dr'].base += 1;
     },
-    Remove() {
+    Remove () {
       char.derived['dr'].base -= 1;
     },
     type: 'special',
@@ -1471,13 +1464,13 @@ FNV_Abilities = {
   'Big Brained': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Brainless'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['dr'].mod += 10;
     },
-    Remove() {
+    Remove () {
       char.derived['dr'].mod -= 10;
     },
     type: 'special',
@@ -1486,13 +1479,13 @@ FNV_Abilities = {
   'Cardiac Arrest': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Heartless'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['pr'].base += 50;
     },
-    Remove() {
+    Remove () {
       char.derived['pr'].base -= 50;
     },
     type: 'special',
@@ -1501,13 +1494,13 @@ FNV_Abilities = {
   'Reinforced Spine': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Spineless'].rang == 0);
     },
-    Add(char) {
+    Add (char) {
       char.derived['dr'].base += 2;
     },
-    Remove() {
+    Remove () {
       char.derived['dr'].base -= 2;
     },
     type: 'special',
@@ -1552,6 +1545,9 @@ FNV_Abilities = {
   'The Bear-Slayer': {
     rangs: 1,
     rang: 0,
+    RequirementsCheck (char) {
+      return (char.Main_Abilities['Divide Survivor'].rang == 0 && char.Main_Abilities['Dead Man\'s Burden'].rang == 0 && char.Main_Abilities['Scourge of the East'].rang == 0);
+    },
     type: 'special',
     level_taken: null,
     Increased: [],
@@ -1567,33 +1563,26 @@ FNV_Abilities = {
       "Luck": 5,
     },
     SpecialWindow: {},
-    Add(char) {
+    Add (char) {
       let raised = this.Increased[this.rang]
       char.SPECIAL[raised].value = this.SPECIAL[raised]
       this.points = this.spent;
       this.spent = 0;
     },
-    Remove() {
+    Remove () {
       let raised = this.Increased[this.rang - 1]
       char.SPECIAL[raised].value -= 1
       this.Increased.pop();
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.SPECIAL) {
         this.SPECIAL[key] = char.SPECIAL[key].value;
         this.SpecialWindow['values'].get(key).textContent = this.SPECIAL[key]
-        if (this.SPECIAL[key] == 10) {
+        if ((this.type == 'levelup' && !char.IsPerkLevel() || this.RequirementsCheck?.(char) == false) || this.SPECIAL[key] == (10 || char.baseSpecial)) {
           this.SpecialWindow['ups'].get(key).disabled = true;
         }
         else {
           this.SpecialWindow['ups'].get(key).disabled = false;
-        }
-
-        if (this.SPECIAL[key] > char.baseSpecial) {
-          this.SpecialWindow['downs'].get(key).disabled = false;
-        }
-        else {
-          this.SpecialWindow['downs'].get(key).disabled = true;
         }
       }
       this.SpecialWindow['article'].textContent = `SPECIAL ${this.points}`;
@@ -1602,6 +1591,9 @@ FNV_Abilities = {
   'Scourge of the East': {
     rangs: 1,
     rang: 0,
+    RequirementsCheck (char) {
+      return (char.Main_Abilities['Divide Survivor'].rang == 0 && char.Main_Abilities['The Bear-Slayer'].rang == 0 && char.Main_Abilities['Dead Man\'s Burden'].rang == 0);
+    },
     type: 'special',
     level_taken: null,
     Increased: [],
@@ -1617,33 +1609,26 @@ FNV_Abilities = {
       "Luck": 5,
     },
     SpecialWindow: {},
-    Add(char) {
+    Add (char) {
       let raised = this.Increased[this.rang]
       char.SPECIAL[raised].value = this.SPECIAL[raised]
       this.points = this.spent;
       this.spent = 0;
     },
-    Remove() {
+    Remove () {
       let raised = this.Increased[this.rang - 1]
       char.SPECIAL[raised].value -= 1
       this.Increased.pop();
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.SPECIAL) {
         this.SPECIAL[key] = char.SPECIAL[key].value;
         this.SpecialWindow['values'].get(key).textContent = this.SPECIAL[key]
-        if (this.SPECIAL[key] == 10) {
+        if ((this.type == 'levelup' && !char.IsPerkLevel() || this.RequirementsCheck?.(char) == false) || this.SPECIAL[key] == (10 || char.baseSpecial)) {
           this.SpecialWindow['ups'].get(key).disabled = true;
         }
         else {
           this.SpecialWindow['ups'].get(key).disabled = false;
-        }
-
-        if (this.SPECIAL[key] > char.baseSpecial) {
-          this.SpecialWindow['downs'].get(key).disabled = false;
-        }
-        else {
-          this.SpecialWindow['downs'].get(key).disabled = true;
         }
       }
       this.SpecialWindow['article'].textContent = `SPECIAL ${this.points}`;
@@ -1652,7 +1637,7 @@ FNV_Abilities = {
   'Dead Man\'s Burden': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Divide Survivor'].rang == 0 && char.Main_Abilities['The Bear-Slayer'].rang == 0 && char.Main_Abilities['Scourge of the East'].rang == 0);
     },
     type: 'special',
@@ -1670,33 +1655,26 @@ FNV_Abilities = {
       "Luck": 5,
     },
     SpecialWindow: {},
-    Add(char) {
+    Add (char) {
       let raised = this.Increased[this.rang]
       char.SPECIAL[raised].value = this.SPECIAL[raised]
       this.points = this.spent;
       this.spent = 0;
     },
-    Remove() {
+    Remove () {
       let raised = this.Increased[this.rang - 1]
       char.SPECIAL[raised].value -= 1
       this.Increased.pop();
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.SPECIAL) {
         this.SPECIAL[key] = char.SPECIAL[key].value;
         this.SpecialWindow['values'].get(key).textContent = this.SPECIAL[key]
-        if (this.SPECIAL[key] == 10) {
+        if ((this.type == 'levelup' && !char.IsPerkLevel() || this.RequirementsCheck?.(char) == false) || this.SPECIAL[key] == (10 || char.baseSpecial)) {
           this.SpecialWindow['ups'].get(key).disabled = true;
         }
         else {
           this.SpecialWindow['ups'].get(key).disabled = false;
-        }
-
-        if (this.SPECIAL[key] > char.baseSpecial) {
-          this.SpecialWindow['downs'].get(key).disabled = false;
-        }
-        else {
-          this.SpecialWindow['downs'].get(key).disabled = true;
         }
       }
       this.SpecialWindow['article'].textContent = `SPECIAL ${this.points}`;
@@ -1705,7 +1683,7 @@ FNV_Abilities = {
   'Divide Survivor': {
     rangs: 1,
     rang: 0,
-    RequirementsCheck(char) {
+    RequirementsCheck (char) {
       return (char.Main_Abilities['Dead Man\'s Burden'].rang == 0 && char.Main_Abilities['The Bear-Slayer'].rang == 0 && char.Main_Abilities['Scourge of the East'].rang == 0);
     },
     type: 'special',
@@ -1723,33 +1701,26 @@ FNV_Abilities = {
       "Luck": 5,
     },
     SpecialWindow: {},
-    Add(char) {
+    Add (char) {
       let raised = this.Increased[this.rang]
       char.SPECIAL[raised].value = this.SPECIAL[raised]
       this.points = this.spent;
       this.spent = 0;
     },
-    Remove() {
+    Remove () {
       let raised = this.Increased[this.rang - 1]
       char.SPECIAL[raised].value -= 1
       this.Increased.pop();
     },
-    UnWrap(char) {
+    UnWrap (char) {
       for (key in char.SPECIAL) {
         this.SPECIAL[key] = char.SPECIAL[key].value;
         this.SpecialWindow['values'].get(key).textContent = this.SPECIAL[key]
-        if (this.SPECIAL[key] == 10) {
+        if ((this.type == 'levelup' && !char.IsPerkLevel() || this.RequirementsCheck?.(char) == false) || this.SPECIAL[key] == (10 || char.baseSpecial)) {
           this.SpecialWindow['ups'].get(key).disabled = true;
         }
         else {
           this.SpecialWindow['ups'].get(key).disabled = false;
-        }
-
-        if (this.SPECIAL[key] > char.baseSpecial) {
-          this.SpecialWindow['downs'].get(key).disabled = false;
-        }
-        else {
-          this.SpecialWindow['downs'].get(key).disabled = true;
         }
       }
       this.SpecialWindow['article'].textContent = `SPECIAL ${this.points}`;
@@ -1793,9 +1764,6 @@ FNV_Abilities = {
     level_taken: null,
   },
 }
-
-
-
 
 
 FNV_Abilities_En = {

@@ -61,7 +61,7 @@ Traits = {
             char.SPECIAL['Agility'].value += 1;
         },
         PersonalFuncOff(char) {
-            char.derived['Agility'].value -= 1;
+            char.SPECIAL['Agility'].value -= 1;
         },
     },
     'HotBlooded': {
@@ -136,7 +136,7 @@ Traits_Ru = {
     },
     FastShot: {
         name: "Стрельба навскидку",
-        Description: "Используя обычное и энергетическое оружие вы стреляете на 20% быстрее,но и на 20% менее точно",
+        Description: "Используя обычное и энергетическое оружие вы стреляете на 20% быстрее, но и на 20% менее точно",
     },
     TriggerDiscipline: {
         name: "Техника спуска",
