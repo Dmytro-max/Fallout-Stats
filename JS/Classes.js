@@ -91,6 +91,37 @@ class FNVChar {
     }
   }
 
+  //Check quality of work
+  Abilitie_IsAvailible(perk, key) {
+    let Check = (perk, key) => {
+      if (perk.RequirementsCheck?.(this) == false || !this.IsPerkLevel() && perk.type == 'levelup' || (this.IsPerkLevel() && perk.type == 'levelup' &&
+        (perk.level > this.level || (this.PerksbyLevel.has(this.level) ? this.PerksbyLevel.get(this.level)['levelup']?.size > 0 : false)))
+      ) {
+        return false
+      }
+      else {
+        return true
+      }
+    }
+
+    if (!this.PerksbyLevel.has(this.level) || !this.PerksbyLevel.get(this.level)['uplevel'] ||
+      (this.PerksbyLevel.has(this.level) ? this.PerksbyLevel.get(this.level)[perk.type].has(key) : false)//if no perks were added this level or there is no levelup perks in list of added this level or IF this perk were added this level
+    ) {
+      Check(perk, key);
+    }
+    else {
+      av_block.classList.add('unAvailible');
+    }
+  }
+  Abilitie_IsRemovale(perk, key) {
+    if (!(this.PerksbyLevel.has(this.level) ? this.PerksbyLevel.get(this.level)[perk.type]?.has(key) : false)) {
+      return false
+    }
+    else {
+      return true
+    }
+  }
+
   SpecialBlocks = new Map();
   skillBlocks = new Map();
   skillBookBlocks = new Map();
@@ -99,29 +130,59 @@ class FNVChar {
   derivedBlocks = new Map();
 
   neededSkillsCount() {
-    let need_sp = (Object.keys(char.skills)).length * char.maxSkillValue;
-    // debugger
-    for (let skill in char.skills) {
-      console.log(char.level-1 )
-      console.log(char.skillsByLevel[char.level-1][skill] )
-        need_sp -= char.skillsByLevel[char.level-1][skill] 
+    let need_sp = (Object.keys(this.skills)).length * this.maxSkillValue;
+
+    for (let skill in this.skills) {
+      need_sp -= this.skillsByLevel[this.level - 1][skill]
     }
+    return need_sp;
   }
   SkillPointsCount() {
-    return (((char.SPECIAL['Intelligence'].value) / 2) + 10 + this.skill_pointsBonus);
+    return (((this.SPECIAL['Intelligence'].value) / 2) + 10 + this.skill_pointsBonus);
   }
-  SkillPointsCountMax(char){
-      return Math.floor(char.inup_level * (10 + (char.SPECIAL['Intelligence'].value - 1) / 2) + 
-      (10 + (char.SPECIAL['Intelligence'].value) / 2) * (char.max_level - 1 - char.inup_level) + char.rest_point);
-    }
+  SkillPointsCountMax() {
+    return Math.floor(this.inup_level * (10 + (this.SPECIAL['Intelligence'].value - 1) / 2) +
+      (10 + (this.SPECIAL['Intelligence'].value) / 2) * (this.max_level - 1 - this.inup_level) + this.rest_point);
+  }
 
   Abilities_Availible = new Map();
   Abilities_Added = new Map();
 
   PerksbyLevel = new Map();
-  DesireAbilities = new Map();
+  DesiredAbilities = new Map();
 
-  PrizeSkills = new Set();
+  ChosenPrizeSkills = new Set();
   chosenTraits = new Set();
+
+
+  //CHARACTER DEVELOPING METHODS
+  Choose_PrizeSkill(name) {
+    let prizeBonus = this.prizeSkillBonus;
+    elem = this.skillBlocks.get(name).block;
+
+    if (this.level == 1) {
+      if (!this.ChosenPrizeSkills.has(name) && (100 - this.skills[name].value(this)) >= prizeBonus) {
+        if (this.prizeSkillsAveilible > 0) {
+          this.prizeSkillsAveilible -= 1;
+          this.skills[name].bonus += prizeBonus;
+          this.skillsByLevel[this.level - 1][name] += prizeBonus;
+          this.ChosenPrizeSkills.add(name);
+        }
+      }
+      else {
+        if (this.skills[name].bonus - prizeBonus >= 0) {
+          this.prizeSkillsAveilible += 1;
+          this.skills[name].bonus -= prizeBonus;
+          this.skillsByLevel[this.level - 1][name] -= prizeBonus;
+          this.ChosenPrizeSkills.delete(name);
+        }
+      }
+    }
+    update_ChoosenPrizeSkills(this);//To remove!
+  }
+
 };
-let char
+
+let char = {
+  key: 'value',
+}

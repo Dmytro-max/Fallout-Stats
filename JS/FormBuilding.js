@@ -1,13 +1,33 @@
-
-
-function BuildAbilities(char) {
-    for (let key in char.Main_Abilities) {
-        AbilitieBlockBuild(char.Main_Abilities[key], key);
+class CharacterCreationForm {
+    character
+    constructor(char) {
+        this.character = char
     }
 
-    function AbilitieBlockBuild(perk, key) {
+    SpecialBlocks = new Map();
+    skillBlocks = new Map();
+    skillBookBlocks = new Map();
+    TraitBlocks = new Map();
+
+    Abilities_Availible = new Map();
+    Abilities_Added = new Map();
+
+    BuildAbilities() {
+        let character = this.character
+
+        let av_block
+        let added_block
+        for (let perkName in character.Main_Abilities) {
+            [av_block, added_block] = this.AbilitieBlockBuild(character.Main_Abilities[perkName], perkName);
+            this.Abilities_Availible.set(perkName, av_block)
+            this.Abilities_Added.set(perkName, added_block)
+        }
+
+    }
+    AbilitieBlockBuild(perk, perkName) {
+
         let av_block = document.createElement('div');
-        av_block.id = key;
+        av_block.id = perkName;
         av_block.classList = 'ability main';
         let added_block = av_block.cloneNode(true);
         added_block.style.display = 'none';
@@ -27,7 +47,6 @@ function BuildAbilities(char) {
         Av_level.textContent = `${perk.level}`
         let Ad_level = Av_level.cloneNode(true)
         // Ad_level.textContent = `${(perk?.level_taken !=null ? perk?.level_taken + '|' : '', perk.level) }`
-
 
 
         av_block.innerHTML += `<h4 lang="ru">${name}</h4>`;
@@ -77,13 +96,13 @@ function BuildAbilities(char) {
                         }
 
                         //Adding desired abilities to 
-                        // if (!char.DesireAbilities.has(perk.level)) {
-                        //     char.DesireAbilities.set(perk.level, {});
+                        // if (!char.DesiredAbilities.has(perk.level)) {
+                        //     char.DesiredAbilities.set(perk.level, {});
                         // }
-                        // if (!char.DesireAbilities.get(perk.level)[`${perk.type}`]) {
-                        //     char.DesireAbilities.get(perk.level)[`${perk.type}`] = new Set();
+                        // if (!char.DesiredAbilities.get(perk.level)[`${perk.type}`]) {
+                        //     char.DesiredAbilities.get(perk.level)[`${perk.type}`] = new Set();
                         // }
-                        // char.DesireAbilities.get(char.level)[`${perk.type}`].add(name)
+                        // char.DesiredAbilities.get(char.level)[`${perk.type}`].add(name)
 
                         break;
                     case 'special':
@@ -134,23 +153,21 @@ function BuildAbilities(char) {
         }
         idiv.addEventListener('click', () => (CheckboxActivate(idiv)))
 
-
-        char.Abilities_Availible.set(key, av_block)
-        char.Abilities_Added.set(key, added_block);
-
         av_block.appendChild(Av_Additional);
         added_block.appendChild(Ad_Additional);
-
 
         av_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
         added_block.addEventListener('click', () => (ElemDescription(Desc, char.Main_Abilities[av_block.id])))
         //
-        av_block.addEventListener('click', () => Targeting(av_block))
-        added_block.addEventListener('click', () => Targeting(added_block))
+        av_block.addEventListener('click', () => AbilitieTargeting(av_block))
+        added_block.addEventListener('click', () => AbilitieTargeting(added_block))
 
         added_block.addEventListener('dblclick', () => (Ability_Remove(char, av_block.id), FNV(char)))
         //if ability require some more specific actions from player(choosing parameter to increase)
-        perkname = key;
+
+        console.log(perkName)
+
+
         if ('SpecialWindow' in perk) {
             SpecialWindowCreate(char, perk, av_block.id);
         }
@@ -160,88 +177,44 @@ function BuildAbilities(char) {
         else {
             av_block.addEventListener('dblclick', () => (Ability_Add(char, av_block.id), FNV(char)))
         }
-
+        //!!Unite?
         if ('SpecialWindow' in perk) {
             Av_Additional.appendChild(perk.SpecialWindow['window']);
         }
         else if ('SkillWindow' in perk) {
             Av_Additional.appendChild(perk.SkillWindow['window']);
         }
+
+        return [av_block, added_block]
+    }
+    Abilities_AveilabilityCheck() {
+        let char = this.character
+
+        for (let key in char.Main_Abilities) {
+            // if(char.Main_Abilities[key] == undefined) debugger
+            console.log(key)
+            let perk = char.Main_Abilities[key];
+            let av_block = this.Abilities_Availible.get(key);
+            let added_block = this.Abilities_Added.get(key);
+
+            if (char.Abilitie_IsAvailible(perk, key)){
+                av_block.classList.remove('unAvailible');
+            }
+            else{
+                av_block.classList.add('unAvailible');
+            }
+
+            if (char.Abilitie_IsAvailible(perk, key)){
+                added_block.classList.remove('unAvailible');
+            }
+            else{
+                added_block.classList.add('unAvailible');
+            }            
+        }
     }
 }
+
 let LastTarget
-function Targeting(target) {
-    if (target != LastTarget) {
-        if (LastTarget != undefined) {
-            LastTarget.classList.toggle('targeted');
-        }
-        target.classList.toggle('targeted');
-        LastTarget = target
-        let name = target.id;
-        char.Main_Abilities[name].UnWrap?.(char)
-    }
-}
-
-function InsertAbilities(char){
-    for (let key in char.Main_Abilities) {
-        let av_block = char.Abilities_Availible.get(key);
-        let added_block = char.Abilities_Added.get(key);
-
-        Level_Availible.append(av_block);
-        Level_Added.append(added_block);
-        switch (char.Main_Abilities[key].type) {
-            case 'levelup':
-                Level_Availible.append(av_block);
-                Level_Added.append(added_block);
-                break;
-            case 'special':
-                Availible.append(av_block);
-                Added.append(added_block);
-                break;
-            case 'implant':
-                ImplantsAvailible.append(av_block);
-                ImplantsAdded.append(added_block);
-                break;
-        }
-    }
-}
-
-function Ability_AveilabilityCheck(char) {
-    let Check = (perk, key) => {
-        let av_block = char.Abilities_Availible.get(key);
-        let added_block = char.Abilities_Added.get(key);
-
-        if (perk.RequirementsCheck?.(char) == false || !char.IsPerkLevel() && perk.type == 'levelup' || (char.IsPerkLevel() && perk.type == 'levelup' &&
-            (perk.level > char.level || (char.PerksbyLevel.has(char.level) ? char.PerksbyLevel.get(char.level)['levelup']?.size > 0 : false)))
-        ) {
-            av_block.classList.add('unAvailible');
-        }
-        else {
-            av_block.classList.remove('unAvailible');
-        }
-        
-        if (!(char.PerksbyLevel.has(char.level) ? char.PerksbyLevel.get(char.level)[perk.type]?.has(key) : false)) {
-            added_block.classList.add('unAvailible');
-        }
-        else {
-            added_block.classList.remove('unAvailible');
-        }
-    }
-
-    for (let key in char.Main_Abilities) {
-        let av_block = char.Abilities_Availible.get(key);
-        perk = char.Main_Abilities[key];
-
-        if (!char.PerksbyLevel.has(char.level) || !char.PerksbyLevel.get(char.level)['uplevel'] ||
-            (char.PerksbyLevel.has(char.level) ? char.PerksbyLevel.get(char.level)[perk.type].has(key) : false)
-        ) {
-            Check(perk, key);
-        }
-        else {
-            av_block.classList.add('unAvailible');
-        }
-    }
-}
 
 function SkillsBuild(char) {
     liSet = new Set();
@@ -257,7 +230,7 @@ function SkillsBuild(char) {
 
             let skill = char.skills[key];
             let maindiv = SkillMainCreate(skillObject, skill);
-            maindiv.addEventListener('click', () => (Choose_PrizeSkill(char, maindiv.id, maindiv), 
+            maindiv.addEventListener('click', () => (char.Choose_PrizeSkill(char, maindiv.id, maindiv),
                 update_ChoosenPrizeSkills(char), FNV(char), ElemDescription(Desc, char.skills[maindiv.id])))
 
             fulldiv.append(maindiv);
@@ -472,7 +445,7 @@ function TraitsBuild(char) {
     for (let key in char.traits) {
         let traitDiv = document.createElement("div");
         traitDiv.id = key;
-        traitDiv.classList = "main unChecked";
+        traitDiv.classList = "trait main unChecked";
 
         let i = document.createElement("i");
         i.classList = 'checkbox';
@@ -488,8 +461,8 @@ function TraitsBuild(char) {
 
         document.querySelector("#Traits>.Stats").appendChild(traitDiv);
 
-        traitDiv.addEventListener("click", () => (Choose_trait(char, traitDiv, traitDiv.id), FNV(char),
-            ElemDescription(Desc, char.traits[key])))
+        traitDiv.addEventListener("click", () => (Choose_trait(char, traitDiv, traitDiv.id),
+            update_ChosenTraits(char), FNV(char), ElemDescription(Desc, char.traits[key])))
 
         char.TraitBlocks.set(traitDiv.id, traitDiv)
     }
@@ -544,6 +517,42 @@ function SpecialBuild(char) {
 
             let Stats = (document.querySelector('#SPECIAL>.Stats'))
             Stats.append(fulldiv)
+        }
+    }
+}
+
+function AbilitieTargeting(target) {
+    if (target != LastTarget) {
+        if (LastTarget != undefined) {
+            LastTarget.classList.toggle('targeted');
+        }
+        target.classList.toggle('targeted');
+        LastTarget = target
+        let name = target.id;
+        char.Main_Abilities[name].UnWrap?.(char)
+    }
+}
+
+function InsertAbilities(char) {
+    for (let key in char.Main_Abilities) {
+        let av_block = char.Abilities_Availible.get(key);
+        let added_block = char.Abilities_Added.get(key);
+
+        Level_Availible.append(av_block);
+        Level_Added.append(added_block);
+        switch (char.Main_Abilities[key].type) {
+            case 'levelup':
+                Level_Availible.append(av_block);
+                Level_Added.append(added_block);
+                break;
+            case 'special':
+                Availible.append(av_block);
+                Added.append(added_block);
+                break;
+            case 'implant':
+                ImplantsAvailible.append(av_block);
+                ImplantsAdded.append(added_block);
+                break;
         }
     }
 }
