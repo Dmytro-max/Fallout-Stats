@@ -1,0 +1,35 @@
+#Traits {
+    opacity: 1;
+    padding-left: 0;
+    margin-left: 0;
+    display: grid;
+    grid-row: 2/4;
+    grid-column: 1/3;
+    /* width: 39.625rem; */
+    /* width: fit-content; */
+    /* height: 30rem; */
+    /* height: fit-content; */
+    border-width: 0.0625rem 0.125rem 0.1875rem 0.1875rem;
+    justify-content: end;
+}
+
+#Traits .Stats {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+}
+
+#Traits .trait {
+    display: grid;
+    min-height: 2.275rem;
+    line-height: 1.05rem;
+    max-height: 3rem;
+    height: fit-content;
+    grid-template-columns: 1.75rem 2.35rem 11.3rem;
+    align-items: center;
+}
+
+#Traits .trait a {
+    display: flex;
+    justify-content: center;
+    margin: 0.2rem 0 0.25rem 0;
+}
